@@ -33,10 +33,10 @@ class Level {
 	 */
 	startMove(entity, direction) {
 		if (direction == "none") {
-			entity.setMoving(false);
+			entity.isMoving = false;
 		} else {
-			entity.setDirection(direction);
-			entity.setMoving(true);
+			entity.direction = direction;
+			entity.isMoving = true;
 		}
 		return true;
 	}

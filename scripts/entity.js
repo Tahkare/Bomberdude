@@ -72,13 +72,23 @@ class MovingEntity extends Entity{
     //methods
 
     /* Get theMovingEntity's position */
-    get position(){
-        return this.position;
+    get direction(){
+        return this.direction;
     }
 
     /* Set theMovingEntity's position */
-    set position(p){
-        this.position = p;
+    set direction(d){
+        this.direction = d;
+    }
+
+    /* Get theMovingEntity's moving status */
+    get isMoving(){
+        return this.isMoving;
+    }
+
+    /* Set theMovingEntity's position */
+    set isMoving(b){
+        this.isMoving = b;
     }
 
     /*
@@ -87,7 +97,7 @@ class MovingEntity extends Entity{
      * Should be called every time a moving entity move.
      */
     onMove(){
-        switch (this.position){
+        switch (this.direction){
             case "UP" :
                 this.y -= 1;
                 break;
@@ -130,7 +140,8 @@ class Player extends MovingEntity{
         else{
             this.x = 1;
             this.y = 1;
-            this.position = "DOWN";
+            this.direction = "DOWN";
+            this.isMoving = false;
             this.life = 3;
             return true;
         }
