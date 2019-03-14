@@ -32,18 +32,12 @@ class Level {
 	 * direction --> string containing "LEFT","RIGHT","UP","DOWN" or "none"
 	 */
 	startMove(entity, direction) {
-		if (!(direction == "LEFT" && parseInt(entity.getX()) > 0)) {
-			return false;
-		} else if (!(direction == "RIGHT" && parseInt(entity.getX()) < map.length-1)) {
-			return false;
-		} else if (!(direction == "UP" && parseInt(entity.getY()) > 0)) {
-			return false;
-		} else if (!(direction == "DOWN" && parseInt(entity.getY()) < map[0].length-1)) {
-			return false;
-		} else if (!(direction == "none")) {
-			return false;
+		if (direction == "none") {
+			entity.setMoving(false);
+		} else {
+			entity.setDirection(direction);
+			entity.setMoving(true);
 		}
-		entity.setDirection(direction);
 		return true;
 	}
 	
