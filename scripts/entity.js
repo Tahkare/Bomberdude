@@ -71,11 +71,14 @@ class MovingEntity extends Entity{
     }
     //methods
 
-    /*
-     * Get theMovingEntity's position
-     */
+    /* Get theMovingEntity's position */
     get position(){
         return this.position;
+    }
+
+    /* Set theMovingEntity's position */
+    set position(p){
+        this.position = p;
     }
 
     /*
@@ -109,16 +112,27 @@ class MovingEntity extends Entity{
  */
 class Player extends MovingEntity{
     /* CONSTRUCTORS */
-    constructor(x, y, life){
+    constructor(x, y){
         super(x,y);
-        Object.defineProperty(this, "HP", {value : life, writable : true});
+        Object.defineProperty(this, "HP", {value : 3, writable : true});
     }
     //methods
-    poseBomb(){}
-    onHit(){
-        this.life -= 1;
-        if(this.life <= 0){
-            this.super.onDestroy();
+
+    /* Used when the player is hit
+    * Player lose one life, if this kill him, then he's put back on the starting point
+    * return true if the player die, otherwise return false.
+    */
+    onDestroy(){
+        if(this.live > 1){
+            this.life -= 1;
+            return false;
+        }
+        else{
+            this.x = 1;
+            this.y = 1;
+            this.position = "DOWN";
+            this.life = 3;
+            return true;
         }
     }
 }
