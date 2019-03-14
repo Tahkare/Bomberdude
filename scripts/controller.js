@@ -1,5 +1,7 @@
-keydown_event(event) {
-	console.log(event.key);
+let keydown_event = function(event) {
+	console.log(event.keyCode);
 }
 
-document.getElementById("cvn").addEventListener("keydown", keydown_event);
+
+
+window.addEventListener("keydown", keydown_event);
