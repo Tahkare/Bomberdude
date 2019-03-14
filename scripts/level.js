@@ -29,7 +29,7 @@ class Level {
 	
 	/* Sets the entity direction so that the movement function will know where to move
 	 * entity --> the entity to move
-	 * direction --> string containing "LEFT","RIGHT","UP","DOWN"
+	 * direction --> string containing "LEFT","RIGHT","UP","DOWN" or "none"
 	 */
 	startMove(entity, direction) {
 		if (!(direction == "LEFT" && parseInt(entity.getX()) > 0)) {
@@ -40,9 +40,7 @@ class Level {
 			return false;
 		} else if (!(direction == "DOWN" && parseInt(entity.getY()) < map[0].length-1)) {
 			return false;
-		} else {
-			//Should not happen
-			console.log("Invalid direction : " + direction);
+		} else if (!(direction == "none")) {
 			return false;
 		}
 		entity.setDirection(direction);
