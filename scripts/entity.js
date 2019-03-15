@@ -71,26 +71,6 @@ class MovingEntity extends Entity{
     }
     //methods
 
-    /* Get theMovingEntity's position */
-    get direction(){
-        return this.direction;
-    }
-
-    /* Set theMovingEntity's position */
-    set direction(d){
-        this.direction = d;
-    }
-
-    /* Get theMovingEntity's moving status */
-    get isMoving(){
-        return this.isMoving;
-    }
-
-    /* Set theMovingEntity's position */
-    set isMoving(b){
-        this.isMoving = b;
-    }
-
     /*
      * Shouldn't be used alone.
      * Work more like a callback function.

@@ -46,20 +46,30 @@ class Level {
 	 * direction --> string containing "LEFT","RIGHT","UP","DOWN"
 	 */
 	applyMove(entity) {
-		let x = parseInt(entity.getX());
-		let y = parseInt(entity.getY());
-		let direction = entity.getDirection();
-		let prev_x = x;
-		let prev_y = y;
-		if (direction == "LEFT") prev_x = x+1;
-		if (direction == "RIGHT") prev_x = x-1;
-		if (direction == "UP") prev_y = y+1;
-		if (direction == "DOWN") prev_y = y-1;
-		let pos = map[prev_x][prev_y].indexOf(entity);
-		map[prev_x][prev_y].splice(pos,pos);
-		map[x][y].push(entity);
+		if(entity.isMoving === false){
+			let x = parseInt(entity.x);
+			let y = parseInt(entity.y);
+			let direction = entity.direction;
+			let prev_x = x;
+			let prev_y = y;
+			if (direction == "LEFT"){ x = x+1; }
+			if (direction == "RIGHT"){ x = x-1; }
+			if (direction == "UP"){ y = y-1; }
+			if (direction == "DOWN"){ y = y+1; }
+			if (direction == "none"){ /* shouldn't happen, raise an exception or print error message */ 
+				console.log(entity + " tried to move when shouldn't");
+			}
+			let pos = map[prev_x][prev_y].indexOf(entity);
+			map[prev_x][prev_y].splice(pos,pos);
+			map[x][y].push(entity);
+		}
 	}
 	
-	
+	collisionDetection(){
+
+	}
+
+	/* */
+
 	
 }
