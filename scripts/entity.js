@@ -71,23 +71,13 @@ class MovingEntity extends Entity{
     }
     //methods
 
-    /* Get theMovingEntity's position */
-    get position(){
-        return this.position;
-    }
-
-    /* Set theMovingEntity's position */
-    set position(p){
-        this.position = p;
-    }
-
     /*
      * Shouldn't be used alone.
      * Work more like a callback function.
      * Should be called every time a moving entity move.
      */
     onMove(){
-        switch (this.position){
+        switch (this.direction){
             case "UP" :
                 this.y -= 1;
                 break;
@@ -130,7 +120,8 @@ class Player extends MovingEntity{
         else{
             this.x = 1;
             this.y = 1;
-            this.position = "DOWN";
+            this.direction = "DOWN";
+            this.isMoving = false;
             this.life = 3;
             return true;
         }

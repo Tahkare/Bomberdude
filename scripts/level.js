@@ -65,8 +65,16 @@ class Level {
 		let pos = map[prev_x][prev_y].indexOf(entity);
 		map[prev_x][prev_y].splice(pos,pos);
 		map[x][y].push(entity);
+
 	}
 	
-	
+	collisionDetection(){
+		for(let i = 0; i < this.map.length; i++){
+			for(let j=0; j < this.map[j].length; j++){
+				
+			}
+		}
+	}
+
 	
 }
