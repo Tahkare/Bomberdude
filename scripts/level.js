@@ -38,14 +38,26 @@ class Level {
 	 * entity --> the entity to move
 	 * direction --> string containing "LEFT","RIGHT","UP","DOWN" or "none"
 	 */
-	start_move(entity, direction) {
-		if (direction == "none") {
-			entity.set_moving(false);
-		} else {
-			entity.set_direction(direction);
-			entity.set_moving(true);
+	startMove(entity, direction) {
+		if(direction != "LEFT" && direction != "RIGHT" && direction != "DOWN" && direction != "UP"){
+			//Should not happen
+			console.log("Invalid direction : " + direction);
+			return false;
 		}
-		return true;
+		else{
+			if(!(direction == "LEFT" && parseInt(entity.getX()) > 0)) {
+				return false;
+			} else if (!(direction == "RIGHT" && parseInt(entity.getX()) < map.length-1)) {
+				return false;
+			} else if (!(direction == "UP" && parseInt(entity.getY()) > 0)) {
+				return false;
+			} else if (!(direction == "DOWN" && parseInt(entity.getY()) < map[0].length-1)) {
+				return false;
+			} else {
+				entity.setDirection(direction);
+				return true;
+			}
+		}
 	}
 	
 	/* Called when an entity moves to another tile
