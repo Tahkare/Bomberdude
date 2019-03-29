@@ -15,7 +15,9 @@ let load_images = function() {
 					wall_vertical : new Image(), wall_horizontal : new Image(), wall_destructible : new Image(), ground : new Image(),
 					
 					bomb_0 : new Image(), bomb_1 : new Image(), bomb_2 : new Image(), 
-					bomb_3 : new Image(), bomb_4 : new Image(), bomb_5 : new Image() 
+					bomb_3 : new Image(), bomb_4 : new Image(), bomb_5 : new Image(),
+					
+					exit : new Image()
 				  };	
 	img_set.player_up_0.src = 'images/player_up_0.png';
 	img_set.player_up_1.src = 'images/player_up_1.png';
@@ -55,6 +57,7 @@ let load_images = function() {
 	img_set.bomb_3.src = 'images/bomb_3.png';
 	img_set.bomb_4.src = 'images/bomb_4.png';
 	img_set.bomb_5.src = 'images/bomb_5.png';
+	img_set.exit.src = 'images/exit.png';
 	return img_set;
 }
 
@@ -249,7 +252,7 @@ let draw_canva = function(map) {
 							context.drawImage(image_set.wall_destructible, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							break;
 						case Wall :
-							if (j==0 || j== map[0].length-1) {
+							if (j==0 || j== map[i].length-1) {
 								context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							} else {
 								context.drawImage(image_set.wall_horizontal, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
@@ -277,6 +280,40 @@ let draw_canva = function(map) {
 									break;
 							}
 							break;
+						case Exit :
+							if (j==0) {
+								if (map[i][j+1].length > 0 && map[i][j+1][1] instanceof DestructibleWall) {
+									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									break;
+								} else {
+									context.drawImage(image_set.exit, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									break;
+								}
+							} else if (j == map[i].length-1) {
+								if (map[i][j-1].length > 0 && map[i][j-1][1] instanceof DestructibleWall) {
+									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									break;
+								} else {
+									context.drawImage(image_set.exit, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									break;
+								}
+							} else if (i == 0) {
+								if (map[i+1][j].length > 0 && map[i+1][j][1] instanceof DestructibleWall) {
+									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									break;
+								} else {
+									context.drawImage(image_set.exit, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									break;
+								}
+							} else if (i == map.length-1) {
+								if (map[i-1][j].length > 0 && map[i-1][j][1] instanceof DestructibleWall) {
+									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									break;
+								} else {
+									context.drawImage(image_set.exit, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									break;
+								}
+							}
 						case Entity :
 							context.drawImage(image_set.ground, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							break;

@@ -14,6 +14,7 @@ class Level {
 	constructor(map, score, timer, kill_all, destroy_all, is_multi, player_list, foe_list, block_list) {
 		Object.defineProperty(this, "map", {value : map, writable : true});
 		Object.defineProperty(this, "score", {value : score, writable : false});
+		Object.defineProperty(this, "current_score", {value : 0, writable : true});
 		Object.defineProperty(this, "timer", {value : timer, writable : true});
 		Object.defineProperty(this, "kill_all", {value : kill_all, writable : false});
 		Object.defineProperty(this, "destroy_all", {value : destroy_all, writable : false});
@@ -24,7 +25,6 @@ class Level {
 		Object.defineProperty(this, "foe_list", {value : foe_list, writable : true});
 		Object.defineProperty(this, "block_list", {value : block_list, writable : true});
 		Object.defineProperty(this, "has_started", {value : false, writable : true});
-		
 	}
 	
 	start() {
