@@ -150,3 +150,7 @@ class Foe extends MovingEntity{
     }
     //methods
 }
+
+
+
+class Exit extends Entity {}

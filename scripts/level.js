@@ -11,32 +11,39 @@ class Level {
 	 * current_score --> The score currently obtained by the player
 	 * 
 	 */
-	constructor(map, score, timer, kill_all, destroy_all, is_multi) {
+	constructor(map, score, timer, kill_all, destroy_all, is_multi, player_list, foe_list, block_list) {
 		Object.defineProperty(this, "map", {value : map, writable : true});
 		Object.defineProperty(this, "score", {value : score, writable : false});
 		Object.defineProperty(this, "timer", {value : timer, writable : true});
 		Object.defineProperty(this, "kill_all", {value : kill_all, writable : false});
-		Object.defineProperty(this, "destroy_all", {value : destroyed_all, writable : false});
+		Object.defineProperty(this, "destroy_all", {value : destroy_all, writable : false});
 		Object.defineProperty(this, "is_multi", {value : is_multi, writable : false});
+		Object.defineProperty(this, "has_exited", {value : false, writable : true});
+		Object.defineProperty(this, "current_score", {value : 0, writable : true});
+		Object.defineProperty(this, "player_list", {value : player_list, writable : false});
+		Object.defineProperty(this, "foe_list", {value : foe_list, writable : true});
+		Object.defineProperty(this, "block_list", {value : block_list, writable : true});
+		Object.defineProperty(this, "has_started", {value : false, writable : true});
 		
-		this.has_exited = false;
-		this.current_score = 0;
 	}
 	
 	start() {
-		
+		if (!this.has_started) {
+			this.has_started = true;
+			// DO STUFF
+		}
 	}
 	
 	/* Sets the entity direction so that the movement function will know where to move
 	 * entity --> the entity to move
 	 * direction --> string containing "LEFT","RIGHT","UP","DOWN" or "none"
 	 */
-	startMove(entity, direction) {
+	start_move(entity, direction) {
 		if (direction == "none") {
-			entity.setMoving(false);
+			entity.set_moving(false);
 		} else {
-			entity.setDirection(direction);
-			entity.setMoving(true);
+			entity.set_direction(direction);
+			entity.set_moving(true);
 		}
 		return true;
 	}
@@ -45,10 +52,10 @@ class Level {
 	 * entity --> the entity to move in the map
 	 * direction --> string containing "LEFT","RIGHT","UP","DOWN"
 	 */
-	applyMove(entity) {
+	apply_move(entity) {
 		let x = parseInt(entity.getX());
 		let y = parseInt(entity.getY());
-		let direction = entity.getDirection();
+		let direction = entity.get_direction();
 		let prev_x = x;
 		let prev_y = y;
 		if (direction == "LEFT") prev_x = x+1;
