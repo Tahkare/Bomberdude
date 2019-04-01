@@ -259,7 +259,7 @@ let draw_canva = function(map) {
 							} 
 							break;
 						case Bomb :
-							switch (map[i][j][k].frame) {
+							switch (map[i][j][k].timer) {
 								case 0 :
 									context.drawImage(image_set.bomb_0, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
@@ -283,7 +283,7 @@ let draw_canva = function(map) {
 						case Exit :
 							if (j==0) {
 								if (map[i][j+1].length > 0 && map[i][j+1][1] instanceof DestructibleWall) {
-									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									context.drawImage(image_set.wall_horizontal, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
 								} else {
 									context.drawImage(image_set.exit, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
@@ -291,7 +291,7 @@ let draw_canva = function(map) {
 								}
 							} else if (j == map[i].length-1) {
 								if (map[i][j-1].length > 0 && map[i][j-1][1] instanceof DestructibleWall) {
-									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									context.drawImage(image_set.wall_horizontal, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
 								} else {
 									context.drawImage(image_set.exit, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
@@ -322,4 +322,9 @@ let draw_canva = function(map) {
 			}
 		}
 	}
+}
+
+let main_screen = function() {
+	context.font = "30px Arial";
+	context.fillText("C'EST MA BITE", 100, 50);
 }

@@ -26,6 +26,8 @@ let keyup_event = function(event) {
 window.addEventListener("keydown", keydown_event);
 window.addEventListener("keyup", keyup_event);
 
+let state = "menu";
+
 let level = level_load("solo/level1.json");
 
 let view = function() {
@@ -34,3 +36,5 @@ let view = function() {
 }
 
 setInterval(view,15);
+
+//main_screen();
