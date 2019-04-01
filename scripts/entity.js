@@ -51,8 +51,10 @@ class Bomb extends Entity{
     /* CONSTRUCTORS */
     constructor(x, y){
         super(x,y);
+        Object.defineProperty(this, "timer", {value : 2000 /*ms*/ , writable : true});
     }
     //methods
+    
 }
 
 /*
@@ -66,8 +68,8 @@ class MovingEntity extends Entity{
     /* CONSTRUCTORS */
     constructor(x, y){
         super(x,y);
-        Object.defineProperty(this, "direction", {value : "DOWN" , writable : true });
-        Object.defineProperty(this, "isMoving",{value : false , writable : true });
+        Object.defineProperty(this, "direction", {value : "NONE" , writable : true });
+        Object.defineProperty(this, "isMoving", {value : false , writable : true });
     }
     //methods
 
@@ -89,6 +91,9 @@ class MovingEntity extends Entity{
                 break;
             case "RIGHT" :
                 this.x -= 1;
+                break;
+            case "NONE" :
+                console.log("MovingEntity.onMove, called with NONE direction");
                 break;
         }
     }
@@ -120,7 +125,7 @@ class Player extends MovingEntity{
         else{
             this.x = 1;
             this.y = 1;
-            this.direction = "DOWN";
+            this.direction = "NONE";
             this.isMoving = false;
             this.life = 3;
             return true;
