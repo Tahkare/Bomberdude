@@ -84,5 +84,9 @@ class Level {
 		}
 	}
 
+	drop_bomb(entity){
+		let bomb = new Bomb (entity.x, entity.y);
+		map[bomb.x][bomb.y].push();
+	}
 	
 }
