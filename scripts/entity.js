@@ -68,7 +68,7 @@ class MovingEntity extends Entity{
     /* CONSTRUCTORS */
     constructor(x, y){
         super(x,y);
-        Object.defineProperty(this, "direction", {value : "NONE" , writable : true });
+        Object.defineProperty(this, "direction", {value : "DOWN" , writable : true });
         Object.defineProperty(this, "isMoving", {value : false , writable : true });
     }
     //methods
