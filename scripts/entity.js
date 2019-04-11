@@ -76,25 +76,30 @@ class MovingEntity extends Entity{
     /*
      * Shouldn't be used alone.
      * Work more like a callback function.
-     * Should be called every time a moving entity move.
+     * Should be called every time update function is called.
      */
-    onMove(){
-        switch (this.direction){
-            case "UP" :
-                this.y -= 1;
-                break;
-            case "DOWN" :
-                this.y += 1;
-                break;
-            case "LEFT" :
-                this.x += 1;
-                break;
-            case "RIGHT" :
-                this.x -= 1;
-                break;
-            case "NONE" :
-                console.log("MovingEntity.onMove, called with NONE direction");
-                break;
+    move(){
+        if(!isMoving){
+            return;
+        }
+        else{
+            switch (this.direction){
+                case "UP" :
+                    this.y -= 0.01;
+                    break;
+                case "DOWN" :
+                    this.y += 0.01;
+                    break;
+                case "LEFT" :
+                    this.x += 0.01;
+                    break;
+                case "RIGHT" :
+                    this.x -= 0.01;
+                    break;
+                case "NONE" :
+                    console.log("MovingEntity.onMove, called with NONE direction && isMoving == true");
+                    break;
+            }
         }
     }
 }

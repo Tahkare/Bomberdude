@@ -30,8 +30,14 @@ class Level {
 	start() {
 		if (!this.has_started) {
 			this.has_started = true;
-			// DO STUFF
+			console.log(this)
+			//let update_clock = setInterval(this.update_level,1000);
 		}
+	}
+
+	update_level(){
+		//this.apply_move(this.player_list[0]);
+		console.log(this)
 	}
 	
 	/* Sets the entity direction so that the movement function will know where to move
@@ -54,23 +60,21 @@ class Level {
 		}
 	}
 	
-	/* Called when an entity moves to another tile
-	 * entity --> the entity to move in the map
-	 * direction --> string containing "LEFT","RIGHT","UP","DOWN"
+	/* Called when an entity moves
+	 * entity --> the entity that move in the map
 	 */
 	apply_move(entity) {
-		let x = parseInt(entity.x);
-		let y = parseInt(entity.y);
+		let prev_x = parseInt(entity.x);
+		let prev_y = parseInt(entity.y);
 		let direction = entity.direction;
-		let prev_x = x;
-		let prev_y = y;
-		if (direction == "LEFT") prev_x = x+1;
-		if (direction == "RIGHT") prev_x = x-1;
-		if (direction == "UP") prev_y = y+1;
-		if (direction == "DOWN") prev_y = y-1;
-		let pos = map[prev_x][prev_y].indexOf(entity);
-		map[prev_x][prev_y].splice(pos,pos);
-		map[x][y].push(entity);
+		entity.move();
+		let new_x = parseInt(entity.x);
+		let new_y = parseInt(entity.y);
+		if( new_x != prev_x || new_y != prev_y){
+			let pos = this.map[prev_x][prev_y].indexOf(entity);
+			this.map[prev_x][prev_y].splice(pos,pos);
+			this.map[x][y].push(entity);
+		}
 	}
 	
 	collisionDetection(){
