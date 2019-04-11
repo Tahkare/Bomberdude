@@ -1,23 +1,28 @@
 let keydown_event = function(event) {
-	if (event.keyCode == 37) level.start_move(level.player_list[0], "LEFT");
-	if (event.keyCode == 38) level.start_move(level.player_list[0], "UP");
-	if (event.keyCode == 39) level.start_move(level.player_list[0], "RIGHT");
-	if (event.keyCode == 40) level.start_move(level.player_list[0], "DOWN");
-	if (event.keyCode == 90 && level.player_list.length ==2) level.start_move(level.player_list[1], "UP");
-	if (event.keyCode == 81 && level.player_list.length ==2) level.start_move(level.player_list[1], "LEFT");
-	if (event.keyCode == 83 && level.player_list.length ==2) level.start_move(level.player_list[1], "DOWN");
-	if (event.keyCode == 68 && level.player_list.length ==2) level.start_move(level.player_list[1], "RIGHT");
-	if (event.keyCode == 80) level.start();
-	if (event.keyCode == 16) level.drop_bomb(level.player_list[0]);
-	if (event.keyCode == 32 && level.player_list.length ==2) level.drop_bomb(level.player_list[1]);
+	if (event.keycode == 8) {level.update_move(level.player_list[0], "UP");}
+	if (event.keyCode == 37) {level.update_move(level.player_list[0], "LEFT");}
+	if (event.keyCode == 38) {level.update_move(level.player_list[0], "UP");}
+	if (event.keyCode == 39) {level.update_move(level.player_list[0], "RIGHT");}
+	if (event.keyCode == 40) {level.update_move(level.player_list[0], "DOWN");}
+	if (event.keyCode == 90 && level.player_list.length ==2) {level.update_move(level.player_list[1], "UP");}
+	if (event.keyCode == 81 && level.player_list.length ==2) {level.update_move(level.player_list[1], "LEFT");}
+	if (event.keyCode == 83 && level.player_list.length ==2) {level.update_move(level.player_list[1], "DOWN");}
+	if (event.keyCode == 68 && level.player_list.length ==2) {level.update_move(level.player_list[1], "RIGHT");}
+	if (event.keyCode == 80) {level.start();}
+	if (event.keyCode == 16) {level.drop_bomb(level.player_list[0]);}
+	if (event.keyCode == 32 && level.player_list.length ==2) {level.drop_bomb(level.player_list[1]);}
 }
 
 let keyup_event = function(event) {
-	if (event.keyCode >= 37 && event.keyCode <= 40) level.start_move(level.player_list[0], "NONE");
-	if (event.keyCode == 90 && level.player_list.length ==2) level.start_move(level.player_list[1], "NONE");
-	if (event.keyCode == 81 && level.player_list.length ==2) level.start_move(level.player_list[1], "NONE");
-	if (event.keyCode == 83 && level.player_list.length ==2) level.start_move(level.player_list[1], "NONE");
-	if (event.keyCode == 68 && level.player_list.length ==2) level.start_move(level.player_list[1], "NONE");
+	if (event.keycode == 8) {console.log("enter is released");}
+	if (event.keyCode == 37) {level.update_move(level.player_list[0], "NONE");}
+	if (event.keyCode == 38) {level.update_move(level.player_list[0], "NONE");}
+	if (event.keyCode == 39) {level.update_move(level.player_list[0], "NONE");}
+	if (event.keyCode == 40) {level.update_move(level.player_list[0], "NONE");}
+	if (event.keyCode == 90 && level.player_list.length ==2) {level.update_move(level.player_list[1], "NONE");}
+	if (event.keyCode == 81 && level.player_list.length ==2) {level.update_move(level.player_list[1], "NONE");}
+	if (event.keyCode == 83 && level.player_list.length ==2) {level.update_move(level.player_list[1], "NONE");}
+	if (event.keyCode == 68 && level.player_list.length ==2) {level.update_move(level.player_list[1], "NONE");}
 }
 
 let click_event = function(event) {

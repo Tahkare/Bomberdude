@@ -38,7 +38,7 @@ class Level {
 	 * entity --> the entity to move
 	 * direction --> string containing "LEFT","RIGHT","UP","DOWN" or "none"
 	 */
-	start_move(entity, direction) {
+	update_move(entity, direction) {
 		if(direction != "LEFT" && direction != "RIGHT" && direction != "DOWN" && direction != "UP" && direction != "NONE"){
 			//Should not happen
 			console.log("Invalid direction : " + direction);
