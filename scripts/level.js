@@ -45,15 +45,12 @@ class Level {
 			return;
 		}
 		else{
-			/*if(entity.isMoving){
-				console.log("entity try to change direction while moving")
-				return;
-			}
-			else{*/
+			if(direction === "NONE"){entity.isMoving = false;}
+			else{
 				entity.direction = direction;
 				entity.isMoving = true;
-				return;
-			//}
+			}
+			return;
 		}
 	}
 	
