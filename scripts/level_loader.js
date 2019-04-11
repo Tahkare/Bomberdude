@@ -14,23 +14,22 @@ let level_load = function(filename) {
 			let sub_sub_map = [];
 			let x = j + 0.5;
 			let y = i + 0.5;
-			sub_sub_map[0] = new Entity(x,y);
 			if (level.level[i][j] == "=" || level.level[i][j] == "|" || level.level[i][j] == "+") {
-				sub_sub_map[1] = new Wall(x,y);
+				sub_sub_map[0] = new Wall(x,y);
 			} else if (level.level[i][j] == "P") {
 				let player = new Player(x,y);
 				player_list[player_list.length] = player;
-				sub_sub_map[1] = player;
+				sub_sub_map[0] = player;
 			} else if (level.level[i][j] == "M") {
 				let foe = new Foe(x,y);
 				foe_list[foe_list.length] = foe;
-				sub_sub_map[1] = foe;
+				sub_sub_map[0] = foe;
 			} else if (level.level[i][j] == "-") {
 				let block = new DestructibleWall(x,y);
 				block_list[block_list.length] = block;
-				sub_sub_map[1] = block;
+				sub_sub_map[0] = block;
 			} else if (level.level[i][j] == "E") {
-				sub_sub_map[1] = new Exit(x,y);
+				sub_sub_map[0] = new Exit(x,y);
 			}
 			sub_map[j] = sub_sub_map;
 		}

@@ -15,9 +15,7 @@ let load_images = function() {
 					wall_vertical : new Image(), wall_horizontal : new Image(), wall_destructible : new Image(), ground : new Image(),
 					
 					bomb_0 : new Image(), bomb_1 : new Image(), bomb_2 : new Image(), 
-					bomb_3 : new Image(), bomb_4 : new Image(), bomb_5 : new Image(),
-					
-					exit : new Image()
+					bomb_3 : new Image(), bomb_4 : new Image(), bomb_5 : new Image()
 				  };	
 	img_set.player_up_0.src = 'images/player_up_0.png';
 	img_set.player_up_1.src = 'images/player_up_1.png';
@@ -57,7 +55,6 @@ let load_images = function() {
 	img_set.bomb_3.src = 'images/bomb_3.png';
 	img_set.bomb_4.src = 'images/bomb_4.png';
 	img_set.bomb_5.src = 'images/bomb_5.png';
-	img_set.exit.src = 'images/exit.png';
 	return img_set;
 }
 
@@ -67,7 +64,12 @@ let draw_canva = function(map) {
 	context.clearRect(0, 0, canva.width, canva.height);
 	let gapX = canva.width / map[0].length;
 	let gapY = canva.height / map.length;
-	for (k=0;k<4;k++) {
+	for (i=0;i<(map.length)+2;i++) {
+		for (j=0;j<map[0].length+2;j++) {
+			context.drawImage(image_set.ground, i*gapX, j*gapY, gapX+1, gapY+1);
+		}
+	}
+	for (k=0;k<3;k++) {
 		for (i=0;i<map.length;i++) {
 			for (j=0;j<map[i].length;j++) {
 				if (map[i][j].length > k) {
@@ -281,38 +283,18 @@ let draw_canva = function(map) {
 							}
 							break;
 						case Exit :
-							if (j==0) {
-								if (map[i][j+1].length > 0 && map[i][j+1][1] instanceof DestructibleWall) {
-									context.drawImage(image_set.wall_horizontal, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
-									break;
-								} else {
-									context.drawImage(image_set.exit, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
-									break;
-								}
-							} else if (j == map[i].length-1) {
-								if (map[i][j-1].length > 0 && map[i][j-1][1] instanceof DestructibleWall) {
-									context.drawImage(image_set.wall_horizontal, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
-									break;
-								} else {
-									context.drawImage(image_set.exit, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
-									break;
-								}
-							} else if (i == 0) {
-								if (map[i+1][j].length > 0 && map[i+1][j][1] instanceof DestructibleWall) {
+							if (j==0 && map[i][j+1].length > 0 && map[i][j+1][1] instanceof DestructibleWall) {
 									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
-								} else {
-									context.drawImage(image_set.exit, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
-									break;
-								}
-							} else if (i == map.length-1) {
-								if (map[i-1][j].length > 0 && map[i-1][j][1] instanceof DestructibleWall) {
+							} else if (j == map[i].length-1 && map[i][j-1].length > 0 && map[i][j-1][1] instanceof DestructibleWall) {
 									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
-								} else {
-									context.drawImage(image_set.exit, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							} else if (i == 0 && map[i+1][j].length > 0 && map[i+1][j][1] instanceof DestructibleWall) {
+									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
-								}
+							} else if (i == map.length-1 && map[i-1][j].length > 0 && map[i-1][j][1] instanceof DestructibleWall) {
+									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									break;
 							}
 						case Entity :
 							context.drawImage(image_set.ground, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
@@ -326,5 +308,6 @@ let draw_canva = function(map) {
 
 let main_screen = function() {
 	context.font = "30px Arial";
-	context.fillText("C'EST MA BITE", 100, 50);
+	context.textAlign = "center";
+	context.fillText("BOMBERDUDE TA MERE", 400, 50);
 }
