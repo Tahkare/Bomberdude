@@ -309,5 +309,15 @@ let draw_canva = function(map) {
 let main_screen = function() {
 	context.font = "30px Arial";
 	context.textAlign = "center";
-	context.fillText("BOMBERDUDE TA MERE", 400, 50);
+	context.fillText("BOMBERDUDE", 400, 50);
+	context.fillStyle = "red";
+	context.fillRect(300,200,200,90);
+	context.fillStyle = "black";
+	context.font = "20px Arial";
+	context.fillText("SINGLE PLAYER", 400, 250);
+	context.fillStyle = "red";
+	context.fillRect(300,350,200,90);
+	context.fillStyle = "black";
+	context.font = "20px Arial";
+	context.fillText("MULTI PLAYER", 400, 400);
 }
