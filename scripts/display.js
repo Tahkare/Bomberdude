@@ -283,17 +283,17 @@ let draw_canva = function(map) {
 							}
 							break;
 						case Exit :
-							if (j==0 && map[i][j+1].length > 0 && map[i][j+1][1] instanceof DestructibleWall) {
+							if (j==0 && map[i][j+1].length > 0 && map[i][j+1][0] instanceof DestructibleWall) {
 									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
-							} else if (j == map[i].length-1 && map[i][j-1].length > 0 && map[i][j-1][1] instanceof DestructibleWall) {
+							} else if (j == map[i].length-1 && map[i][j-1].length > 0 && map[i][j-1][0] instanceof DestructibleWall) {
 									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
-							} else if (i == 0 && map[i+1][j].length > 0 && map[i+1][j][1] instanceof DestructibleWall) {
-									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							} else if (i == 0 && map[i+1][j].length > 0 && map[i+1][j][0] instanceof DestructibleWall) {
+									context.drawImage(image_set.wall_horizontal, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
-							} else if (i == map.length-1 && map[i-1][j].length > 0 && map[i-1][j][1] instanceof DestructibleWall) {
-									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							} else if (i == map.length-1 && map[i-1][j].length > 0 && map[i-1][j][0] instanceof DestructibleWall) {
+									context.drawImage(image_set.wall_horizontal, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
 							}
 						case Entity :
