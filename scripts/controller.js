@@ -28,14 +28,14 @@ let keyup_event = function(event) {
 let click_event = function(event) {
 	console.log(event);
 	if (current_level == 0) {
-		if (event.screenX >= 300 && event.screenX <= 500 && event.screenY >= 200 && event.screenY <= 290) {
+		if (event.clientX >= 300 && event.clientX <= 500 && event.clientY >= 200 && event.clientY <= 290) {
 			window.addEventListener("keydown", keydown_event);
 			window.addEventListener("keyup", keyup_event);
 			level = level_load("solo/level1.json");
 			current_level = 1;
 			interval = setInterval(view,15);
 		}
-		if (event.screenX >= 300 && event.screenX <= 500 && event.screenY >= 350 && event.screenY <= 290) {
+		if (event.clientX >= 300 && event.clientX <= 500 && event.clientY >= 350 && event.clientY <= 290) {
 			window.addEventListener("keydown", keydown_event);
 			window.addEventListener("keyup", keyup_event);
 			level = level_load("multi/level_multi.json");
