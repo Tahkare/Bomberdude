@@ -1,6 +1,5 @@
 let keydown_event = function(event) {
-	if (event.keyCode == 88) {level.player_list[0].move(); console.log("x est appuyer")}
-	if (event.keyCode == 37) {level.update_move(level.player_list[0], "LEFT"); console.log("wala LEFT")}
+	if (event.keyCode == 37) {level.update_move(level.player_list[0], "LEFT");}
 	if (event.keyCode == 38) {level.update_move(level.player_list[0], "UP");}
 	if (event.keyCode == 39) {level.update_move(level.player_list[0], "RIGHT");}
 	if (event.keyCode == 40) {level.update_move(level.player_list[0], "DOWN");}
@@ -32,22 +31,22 @@ let click_event = function(event) {
 			window.addEventListener("keyup", keyup_event);
 			level = level_load("solo/level1.json");
 			current_level = 1;
-			interval = setInterval(view,15);
+			interval = window.setInterval(view,15);
 		}
 		if (event.clientX >= 300 && event.clientX <= 500 && event.clientY >= 350 && event.clientY <= 440) {
 			window.addEventListener("keydown", keydown_event);
 			window.addEventListener("keyup", keyup_event);
 			level = level_load("multi/level_multi.json");
 			current_level = -1;
-			interval = setInterval(view,15);
+			interval = window.setInterval(view,15);
 		}
 	}
 }
 
-let view = function() {
+let view = async function() {
 	console.log("Displaying the level");
-	draw_canva(level.map);
-	level.update_level();
+	await draw_canva(level.map);
+	await window.requestAnimationFrame(function() { level.update_level() });
 }
 
 let end_level = function(has_won) {
@@ -61,7 +60,7 @@ let end_level = function(has_won) {
 		current_level += 1;
 		clearInterval(interval);
 		level = level_load("solo/level"+current_level+".json");
-		interval = setInterval(view,15);
+		interval = window.setInterval(view,15);
 	}
 }
 

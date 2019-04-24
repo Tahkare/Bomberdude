@@ -11,8 +11,8 @@ class Level {
 	 * current_score --> The score currently obtained by the player
 	 * 
 	 */
-	constructor(map, score, timer, kill_all, destroy_all, is_multi, player_list, foe_list, block_list) {
-		Object.defineProperty(this, "map", {value : map, writable : true});
+	constructor(score, timer, kill_all, destroy_all, is_multi) {
+		Object.defineProperty(this, "map", {value : [], writable : true});
 		Object.defineProperty(this, "score", {value : score, writable : false});
 		Object.defineProperty(this, "current_score", {value : 0, writable : true});
 		Object.defineProperty(this, "timer", {value : timer, writable : true});
@@ -21,23 +21,38 @@ class Level {
 		Object.defineProperty(this, "is_multi", {value : is_multi, writable : false});
 		Object.defineProperty(this, "has_exited", {value : false, writable : true});
 		Object.defineProperty(this, "current_score", {value : 0, writable : true});
-		Object.defineProperty(this, "player_list", {value : player_list, writable : false});
-		Object.defineProperty(this, "foe_list", {value : foe_list, writable : true});
-		Object.defineProperty(this, "block_list", {value : block_list, writable : true});
+		Object.defineProperty(this, "player_list", {value : [], writable : true});
+		Object.defineProperty(this, "foe_list", {value : [], writable : true});
+		Object.defineProperty(this, "block_list", {value : [], writable : true});
+		Object.defineProperty(this, "wall_list", {value : [], writable : true});
+		Object.defineProperty(this, "bomb_list", {value : [], writable : true});
 		Object.defineProperty(this, "has_started", {value : false, writable : true});
+	}
+	
+	set_map(map) {
+		this.map = map;
+	}
+	
+	set_lists(player_list, foe_list, block_list, wall_list) {
+		this.player_list = player_list;
+		this.foe_list = foe_list;
+		this.block_list = block_list;
+		this.wall_list = wall_list;
 	}
 	
 	start() {
 		if (!this.has_started) {
 			this.has_started = true;
 			console.log(this)
-			//let update_clock = setInterval(this.update_level,1000);
 		}
 	}
 
 	update_level(){
-		//this.apply_move(this.player_list[0]);
-		console.log(this)
+		if (this.has_started) {
+			for (i=0;i<this.player_list.length;i++) {
+				this.player_list[i].update();
+			}
+		}
 	}
 	
 	/* Sets the entity direction so that the movement function will know where to move
@@ -45,42 +60,19 @@ class Level {
 	 * direction --> string containing "LEFT","RIGHT","UP","DOWN" or "none"
 	 */
 	update_move(entity, direction) {
-		if(direction != "LEFT" && direction != "RIGHT" && direction != "DOWN" && direction != "UP" && direction != "NONE"){
-			//Should not happen
-			console.log("Invalid direction : " + direction);
-			return;
-		}
-		else{
-			if(direction === "NONE"){entity.isMoving = false;}
-			else{
-				entity.direction = direction;
-				entity.isMoving = true;
+		if (this.has_started) {
+			if(direction != "LEFT" && direction != "RIGHT" && direction != "DOWN" && direction != "UP" && direction != "NONE"){
+				//Should not happen
+				console.log("Invalid direction : " + direction);
+				return;
 			}
-			return;
-		}
-	}
-	
-	/* Called when an entity moves
-	 * entity --> the entity that move in the map
-	 */
-	apply_move(entity) {
-		let prev_x = parseInt(entity.x);
-		let prev_y = parseInt(entity.y);
-		let direction = entity.direction;
-		entity.move();
-		let new_x = parseInt(entity.x);
-		let new_y = parseInt(entity.y);
-		if( new_x != prev_x || new_y != prev_y){
-			let pos = this.map[prev_x][prev_y].indexOf(entity);
-			this.map[prev_x][prev_y].splice(pos,pos);
-			this.map[x][y].push(entity);
-		}
-	}
-	
-	collisionDetection(){
-		for(let i = 0; i < this.map.length; i++){
-			for(let j=0; j < this.map[j].length; j++){
-				
+			else{
+				if(direction === "NONE"){entity.isMoving = false;}
+				else{
+					entity.direction = direction;
+					entity.isMoving = true;
+				}
+				return;
 			}
 		}
 	}

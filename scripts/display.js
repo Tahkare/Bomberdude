@@ -1,5 +1,5 @@
-const canva = document.getElementById("cvn");
-const context = canva.getContext('2d');
+let canva = document.getElementById("cvn");
+let context = canva.getContext('2d');
 
 let load_images = function() {
 	let img_set = { player_up_0 : new Image(), player_up_1 : new Image(), player_up_2 : new Image(),
@@ -261,7 +261,7 @@ let draw_canva = function(map) {
 							} 
 							break;
 						case Bomb :
-							switch (map[i][j][k].timer) {
+							switch (map[i][j][k].frame) {
 								case 0 :
 									context.drawImage(image_set.bomb_0, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
