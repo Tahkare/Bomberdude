@@ -24,7 +24,6 @@ let keyup_event = function(event) {
 }
 
 let click_event = function(event) {
-	console.log(event);
 	if (current_level == 0) {
 		if (event.clientX >= 300 && event.clientX <= 500 && event.clientY >= 200 && event.clientY <= 290) {
 			window.addEventListener("keydown", keydown_event);
@@ -43,24 +42,35 @@ let click_event = function(event) {
 	}
 }
 
-let view = async function() {
+let view = function() {
 	console.log("Displaying the level");
-	await draw_canva(level.map);
-	await window.requestAnimationFrame(function() { level.update_level() });
+	draw_canva(level.map,level.has_started);
+	window.requestAnimationFrame(function() { level.update_level() });
 }
 
 let end_level = function(has_won) {
-	if (current_level < 0 || current_level == 5) {
+	if (!has_won) {
+		display_loss();
+	} else {
+		display_win();
+	}
+	document.getElementById("timer").innerHTML = "";
+	document.getElementById("score").innerHTML = "";
+	document.getElementById("kill").innerHTML = "";
+	document.getElementById("destroy").innerHTML = "";
+	if (current_level < 0 || current_level == 5 || !has_won) {
 		clearInterval(interval);
 		window.removeEventListener("keydown",keydown_event);
 		window.removeEventListener("keyup",keyup_event);
 		current_level = 0;
-		main_screen();
+		setTimeout(main_screen,4000);
 	} else {
 		current_level += 1;
 		clearInterval(interval);
-		level = level_load("solo/level"+current_level+".json");
-		interval = window.setInterval(view,15);
+		setTimeout(() => {
+						level = level_load("solo/level"+current_level+".json");
+						interval = window.setInterval(view,15);
+						 }, 4000);
 	}
 }
 

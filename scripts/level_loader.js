@@ -9,7 +9,7 @@ let level_load = function(filename) {
 	let player_list = [];
 	let foe_list = [];
 	let block_list = [];
-	let wall_list = [];
+	let exit_list = [];
 	for (i=0; i<level.level.length;i++) {
 		let sub_map = [];
 		for (j=0; j<level.level[i].length;j++) {
@@ -18,7 +18,6 @@ let level_load = function(filename) {
 			let y = i + 0.5;
 			if (level.level[i][j] == "=" || level.level[i][j] == "|" || level.level[i][j] == "+") {
 				let wall = new Wall(x,y,result_level);
-				wall_list[wall_list.length] = wall;
 				sub_sub_map[0] = wall;
 			} else if (level.level[i][j] == "P") {
 				let player = new Player(x,y,result_level);
@@ -33,13 +32,15 @@ let level_load = function(filename) {
 				block_list[block_list.length] = block;
 				sub_sub_map[0] = block;
 			} else if (level.level[i][j] == "E") {
-				sub_sub_map[0] = new Exit(x,y,result_level);
+				let exit = new Exit(x,y,result_level);
+				sub_sub_map[0] = exit;
+				exit_list[exit_list.length] = exit;
 			}
 			sub_map[j] = sub_sub_map;
 		}
 		map[i] = sub_map;
 	}
 	result_level.set_map(map);
-	result_level.set_lists(player_list, foe_list, block_list, wall_list);
+	result_level.set_lists(player_list, foe_list, block_list, exit_list);
 	return result_level;
 }

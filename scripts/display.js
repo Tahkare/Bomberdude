@@ -15,7 +15,9 @@ let load_images = function() {
 					wall_vertical : new Image(), wall_horizontal : new Image(), wall_destructible : new Image(), ground : new Image(),
 					
 					bomb_0 : new Image(), bomb_1 : new Image(), bomb_2 : new Image(), 
-					bomb_3 : new Image(), bomb_4 : new Image(), bomb_5 : new Image()
+					bomb_3 : new Image(), bomb_4 : new Image(), bomb_5 : new Image(),
+					
+					explosion : new Image()
 				  };	
 	img_set.player_up_0.src = 'images/player_up_0.png';
 	img_set.player_up_1.src = 'images/player_up_1.png';
@@ -55,12 +57,13 @@ let load_images = function() {
 	img_set.bomb_3.src = 'images/bomb_3.png';
 	img_set.bomb_4.src = 'images/bomb_4.png';
 	img_set.bomb_5.src = 'images/bomb_5.png';
+	img_set.explosion.src = 'images/explosion.png';
 	return img_set;
 }
 
 const image_set = load_images();
 
-let draw_canva = function(map) {
+let draw_canva = function(map,started) {
 	context.clearRect(0, 0, canva.width, canva.height);
 	let gapX = canva.width / map[0].length;
 	let gapY = canva.height / map.length;
@@ -282,6 +285,9 @@ let draw_canva = function(map) {
 									break;
 							}
 							break;
+						case Explosion :
+							context.drawImage(image_set.explosion, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							break;
 						case Exit :
 							if (j==0 && map[i][j+1].length > 0 && map[i][j+1][0] instanceof DestructibleWall) {
 									context.drawImage(image_set.wall_vertical, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
@@ -296,17 +302,34 @@ let draw_canva = function(map) {
 									context.drawImage(image_set.wall_horizontal, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
 							}
-						case Entity :
-							context.drawImage(image_set.ground, (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
-							break;
 					}
 				}
 			}
 		}
 	}
+	if (!started) {
+		context.fillStyle = "red";
+		context.font = "70px Arial";
+		context.fillText("Press P to start the level",400,300);
+	}
+}
+
+let display_loss = function() {
+	context.fillStyle = "red";
+	context.font = "70px Arial";
+	context.fillText("Defeat :(",400,300);
+}
+
+let display_win = function() {
+	context.fillStyle = "green";
+	context.font = "70px Arial";
+	context.fillText("Victory !",400,300);
 }
 
 let main_screen = function() {
+	context.fillStyle = "white";
+	context.fillRect(0,0,800,600);
+	context.fillStyle = "black";
 	context.font = "30px Arial";
 	context.textAlign = "center";
 	context.fillText("BOMBERDUDE", 400, 50);

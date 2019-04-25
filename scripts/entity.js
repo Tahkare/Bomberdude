@@ -4,21 +4,23 @@
  *  walls / destructible walls / foes / players / bombs
  *  Contains the common informations of every entities :
  *  attributes :
- *      x : the column index in the level.Map
- *      y : he row index in the levelMap
+ *      x : the column index in the level map
+ *      y : the row index in the level map
  */
 
 class Entity {
 
     /* CONSTRUCTORS */
     constructor(x, y, level){
-        Object.defineProperty(this, "x", {value : x , writable : true});
-        Object.defineProperty(this, "y", {value : y , writable : true});
-        Object.defineProperty(this, "level", {value : level , writable : true});
-        Object.defineProperty(this, "frame_counter", {value : 0 , writable : true});
-        Object.defineProperty(this, "frame", {value : 0 , writable : true});
+        this.x = x;
+        this.y = y;
+        this.level = level;
+        this.frame_counter = 0;
+        this.frame = 0;
     }
+    
     /* METHODS */ 
+    update(){};
     onDestroy(){};
 }
 
@@ -31,7 +33,6 @@ class Wall extends Entity{
     constructor(x, y, level){
         super(x,y,level);
     }
-    //methods (Wall got no methods)
 }
 
 /*
@@ -44,6 +45,12 @@ class DestructibleWall extends Wall{
         super(x,y,level);
     }
     //methods
+    onDestroy() {
+		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
+		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
+		pos = this.level.block_list.indexOf(this);
+		this.level.block_list.splice(pos,1);
+	}
 }
 
 /*
@@ -52,11 +59,70 @@ class DestructibleWall extends Wall{
  */
 class Bomb extends Entity{
     /* CONSTRUCTORS */
-    constructor(x, y, level){
+    constructor(x, y, level,player){
         super(x,y,level);
+        this.player = player;
     }
     //methods
+    update() {
+		this.frame_counter = (this.frame_counter + 1) % 20;
+		if (this.frame_counter == 0) {
+			this.frame += 1;
+		}
+		if (this.frame == 6) {
+			this.onDestroy();
+		}
+	}
+	
+	onDestroy() {
+		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
+		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
+		pos = this.level.bomb_list.indexOf(this);
+		this.level.bomb_list.splice(pos,1);
+		this.player.bomb_count -= 1;
+		let explosion_1 = new Explosion(this.x,this.y,this.level);
+		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(0,0,explosion_1);
+		this.level.explosion_list.push(explosion_1);
+		let explosion_2 = new Explosion(this.x+1,this.y,this.level);
+		this.level.map[parseInt(this.y)][parseInt(this.x)+1].splice(0,0,explosion_2);
+		this.level.explosion_list.push(explosion_2);
+		let explosion_3 = new Explosion(this.x-1,this.y,this.level);
+		this.level.map[parseInt(this.y)][parseInt(this.x)-1].splice(0,0,explosion_3);
+		this.level.explosion_list.push(explosion_3);
+		let explosion_4 = new Explosion(this.x,this.y+1,this.level);
+		this.level.map[parseInt(this.y)+1][parseInt(this.x)].splice(0,0,explosion_4);
+		this.level.explosion_list.push(explosion_4);
+		let explosion_5 = new Explosion(this.x,this.y-1,this.level);
+		this.level.map[parseInt(this.y)-1][parseInt(this.x)].splice(0,0,explosion_5);
+		this.level.explosion_list.push(explosion_5);
+	}
+}
+
+class Explosion extends Entity {
+	/* CONSTRUCTORS */
+    constructor(x, y, level){
+        super(x,y,level);
+        for (let i=0;i<this.level.map[parseInt(this.y)][parseInt(this.x)].length;i++) {
+			let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
+			if (i != pos) {
+				this.level.map[parseInt(this.y)][parseInt(this.x)][i].onDestroy();
+			}
+		}
+    }
     
+    update() {
+		this.frame_counter += 1
+		if (this.frame_counter == 10) {
+			this.onDestroy();
+		}
+	}
+	
+	onDestroy(){
+		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
+		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
+		pos = this.level.explosion_list.indexOf(this);
+		this.level.explosion_list.splice(pos,1);
+    }
 }
 
 /*
@@ -85,82 +151,82 @@ class MovingEntity extends Entity{
             switch (this.direction){
                 case "UP" :
                     this.y -= 0.04;
-                    if (this.y % 1 <= 0.5 && this.level.map[parseInt(this.y)-1][parseInt(this.x)].length > 0) {
+                    if (this.y % 1 <= 0.5 && this.level.map[parseInt(this.y)-1][parseInt(this.x)].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Foe) {
 						this.y += 0.04;
 						return false;
 					}
-					if (this.x % 1 >= 0.8 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0) {
+					if (this.x % 1 >= 0.8 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe) {
 						this.y += 0.04;
 						return false;
 					}
-					if (this.x % 1 <= 0.2 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0) {
+					if (this.x % 1 <= 0.2 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe) {
 						this.y += 0.04;
 						return false;
 					}
                     if (this.y % 1 >= 0.96) {
 						let pos = this.level.map[parseInt(this.y)+1][parseInt(this.x)].indexOf(this);
-						this.level.map[parseInt(this.y)+1][parseInt(this.x)] = this.level.map[parseInt(this.y)+1][parseInt(this.x)].splice(pos,pos);			
+						this.level.map[parseInt(this.y)+1][parseInt(this.x)].splice(pos,1);			
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
 					}
                     break;
                 case "DOWN" :
                     this.y += 0.04;
-                    if (this.y % 1 >= 0.5 && this.level.map[parseInt(this.y)+1][parseInt(this.x)].length > 0) {
+                    if (this.y % 1 >= 0.5 && this.level.map[parseInt(this.y)+1][parseInt(this.x)].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Foe) {
 						this.y -= 0.04;
 						return false;
 					}
-					if (this.x % 1 >= 0.8 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0) {
+					if (this.x % 1 >= 0.8 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Foe) {
 						this.y -= 0.04;
 						return false;
 					}
-					if (this.x % 1 <= 0.2 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0) {
+					if (this.x % 1 <= 0.2 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe) {
 						this.y -= 0.04;
 						return false;
 					}
                     if (this.y % 1 <= 0.04) {
 						let pos = this.level.map[parseInt(this.y)-1][parseInt(this.x)].indexOf(this);
-						this.level.map[parseInt(this.y)-1][parseInt(this.x)] = this.level.map[parseInt(this.y)-1][parseInt(this.x)].splice(pos,pos);
+						this.level.map[parseInt(this.y)-1][parseInt(this.x)].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
 					}
                     break;
                 case "LEFT" :
                     this.x -= 0.04;
-                    if (this.x % 1 <= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)-1].length > 0) {
+                    if (this.x % 1 <= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Foe) {
 						this.x += 0.04;
 						return false;
 					}
-					if (this.y % 1 >= 0.8 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0) {
+					if (this.y % 1 >= 0.8 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe) {
 						this.x += 0.04;
 						return false;
 					}
-					if (this.y % 1 <= 0.2 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0) {
+					if (this.y % 1 <= 0.2 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe) {
 						this.x += 0.04;
 						return false;
 					}
                     if (this.x % 1 >= 0.96) {
 						let pos = this.level.map[parseInt(this.y)][parseInt(this.x)+1].indexOf(this);
-						this.level.map[parseInt(this.y)][parseInt(this.x)+1] = this.level.map[parseInt(this.y)][parseInt(this.x)+1].splice(pos,pos);
+						this.level.map[parseInt(this.y)][parseInt(this.x)+1].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
 						
 					}
                     break;
                 case "RIGHT" :
                     this.x += 0.04;
-                    if (this.x % 1 >= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)+1].length > 0) {
+                    if (this.x % 1 >= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Foe) {
 						this.x -= 0.04;
 						return false;
 					}
-					if (this.y % 1 >= 0.8 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0) {
+					if (this.y % 1 >= 0.8 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)]+1[parseInt(this.x)+1][0].constructor != Foe) {
 						this.x -= 0.04;
 						return false;
 					}
-					if (this.y % 1 <= 0.2 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0) {
+					if (this.y % 1 <= 0.2 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe) {
 						this.x -= 0.04;
 						return false;
 					}
                     if (this.x % 1 <= 0.04) {
 						let pos = this.level.map[parseInt(this.y)][parseInt(this.x)-1].indexOf(this);
-						this.level.map[parseInt(this.y)][parseInt(this.x)-1] = this.level.map[parseInt(this.y)][parseInt(this.x)-1].splice(pos,pos);
+						this.level.map[parseInt(this.y)][parseInt(this.x)-1].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
 						
 					}
@@ -188,7 +254,7 @@ class Player extends MovingEntity{
     /* CONSTRUCTORS */
     constructor(x, y, level){
         super(x,y,level);
-        Object.defineProperty(this, "HP", {value : 3, writable : true});
+        Object.defineProperty(this, "bomb_count", {value : 0, writable : true});
     }
     
     //methods
@@ -196,36 +262,28 @@ class Player extends MovingEntity{
 	update() {
 		this.frame_counter = (this.frame_counter + 1) % 10;
 		if (this.frame_counter == 0) {
-			this.frame = (this.frame + 1) % 3;
+			this.frame = (this.frame + 1) % 4;
 		}
 		this.move();
+		for (let i=0; i<this.level.map[parseInt(this.y)][parseInt(this.x)].length;i++) {
+			if (this.level.map[parseInt(this.y)][parseInt(this.x)][i].constructor == Foe) {
+				this.onDestroy();
+			}
+		}
 	}
 	
     /* Used when the player is hit
-    * Player lose one life, if this kill him, then he's put back on the starting point
-    * return true if the player die, otherwise return false.
     */
     onDestroy(){
-        if(this.live > 1){
-            this.life -= 1;
-            return false;
-        }
-        else{
-            this.x = 1;
-            this.y = 1;
-            this.direction = "NONE";
-            this.isMoving = false;
-            this.life = 3;
-            return true;
-        }
+		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
+		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
+		pos = this.level.player_list.indexOf(this);
+		this.level.player_list.splice(pos,1);
     }
 }
 
 /*
  * Used only for Foes Entity
- *
- * 
- * 
  */
 class Foe extends MovingEntity{
     /* CONSTRUCTORS */
@@ -237,13 +295,26 @@ class Foe extends MovingEntity{
     update() {
 		this.frame_counter = (this.frame_counter + 1) % 10;
 		if (this.frame_counter == 0) {
-			this.frame = (this.frame + 1) % 3;
+			this.frame = (this.frame + 1) % 4;
 		}
 		this.move();
+		// TODO -> DEFINE DIRECTION
 	}
+	
+	onDestroy(){
+		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
+		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
+		pos = this.level.foe_list.indexOf(this);
+		this.level.foe_list.splice(pos,1);
+    }
     
 }
 
 
 
-class Exit extends Entity {}
+class Exit extends Entity {
+	/* CONSTRUCTORS */
+    constructor(x, y, level){
+        super(x,y,level);
+    }
+}
