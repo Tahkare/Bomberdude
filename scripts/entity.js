@@ -1,11 +1,12 @@
 /*
- * Entity is an "abstract class"
- *  it represent every object inside a level of the bomberman :
- *  walls / destructible walls / foes / players / bombs
- *  Contains the common informations of every entities :
+ *  Entity is an "abstract class"
+ *  it represent every object inside a level of the bomberdude :
+ *  walls / destructible walls / foes / players / bombs / explosions / exits
+ *  Contains the common information to every entity :
  *  attributes :
  *      x : the column index in the level map
  *      y : the row index in the level map
+ * 		level : the level
  */
 
 class Entity {
@@ -19,14 +20,17 @@ class Entity {
         this.frame = 0;
     }
     
-    /* METHODS */ 
+    /* METHODS */
+    // Called 60 times per second to update the entity 
     update(){};
+    // Called when the entity should be destroyed (hit by an explosion for example)
     onDestroy(){};
 }
 
 /*
- * Used for level's border walls && unbreakable walls
- * Also mother of DestructibleWall
+ * Used for the border walls and indestructible walls in the level
+ * Also parent of DestructibleWall
+ * Entity without anything in particular
  */
 class Wall extends Entity{
     /* CONSTRUCTORS */
@@ -36,8 +40,8 @@ class Wall extends Entity{
 }
 
 /*
- * Used for DestructibleWalls inside level
- * can be destroy
+ * Used for destructible walls inside the level
+ * can be destroyed
  */
 class DestructibleWall extends Wall{
     /* CONSTRUCTORS */
@@ -45,6 +49,7 @@ class DestructibleWall extends Wall{
         super(x,y,level);
     }
     //methods
+    // When it should be destroyed, we remove it from the map and the list of destructible walls
     onDestroy() {
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
@@ -54,8 +59,8 @@ class DestructibleWall extends Wall{
 }
 
 /*
- * Used for Bombs inside level
- * can be destroy
+ * Used for bombs inside the level
+ * can be destroyed
  */
 class Bomb extends Entity{
     /* CONSTRUCTORS */
@@ -63,7 +68,9 @@ class Bomb extends Entity{
         super(x,y,level);
         this.player = player;
     }
-    //methods
+    // methods
+    // Animated every 20 loops
+    // explodes after 120 loops (2 seconds)
     update() {
 		this.frame_counter = (this.frame_counter + 1) % 20;
 		if (this.frame_counter == 0) {
@@ -75,11 +82,16 @@ class Bomb extends Entity{
 	}
 	
 	onDestroy() {
+		// When it explodes, removed from the map and the list
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
 		pos = this.level.bomb_list.indexOf(this);
 		this.level.bomb_list.splice(pos,1);
+		
+		// The owner's bomb count is reduced by 1
 		this.player.bomb_count -= 1;
+		
+		// We create 5 explosion entities on the 5 tiles where the explosion can have an effect
 		let explosion_1 = new Explosion(this.x,this.y,this.level);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(0,0,explosion_1);
 		this.level.explosion_list.push(explosion_1);
@@ -97,6 +109,7 @@ class Bomb extends Entity{
 		this.level.explosion_list.push(explosion_5);
 	}
 }
+
 
 class Explosion extends Entity {
 	/* CONSTRUCTORS */
