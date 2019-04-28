@@ -46,7 +46,7 @@ class AnimatedSprite extends Sprite {
 
 let load_images = function() {
 	return  { 	player : new MovingSprite("player"),
-				foe : new MovingSprite("foe),
+				foe : new MovingSprite("foe"),
 				wall_vertical : new AnimatedSprite("wall_vertical",1),
 				wall_horizontal : new AnimatedSprite("wall_horizontal",1), 
 				wall_destructible : new AnimatedSprite("wall_destructible",1), 
@@ -64,7 +64,7 @@ let draw_canva = function(map,started) {
 	let gapY = canva.height / map.length;
 	for (i=0;i<(map.length)+2;i++) {
 		for (j=0;j<map[0].length+2;j++) {
-			context.drawImage(image_set.ground[0], i*gapX, j*gapY, gapX+1, gapY+1);
+			context.drawImage(image_set.ground.frames[0], i*gapX, j*gapY, gapX+1, gapY+1);
 		}
 	}
 	for (k=0;k<3;k++) {
@@ -74,46 +74,46 @@ let draw_canva = function(map,started) {
 					switch (map[i][j][k].constructor) {
 						case Player :
 							if (map[i][j][k].isMoving) {
-									context.drawImage(image_set.player[map[i][j][k].direction][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									context.drawImage(image_set.player.frames[map[i][j][k].direction][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							} else {
-									context.drawImage(image_set.player[map[i][j][k].direction][0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									context.drawImage(image_set.player.frames[map[i][j][k].direction][0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							}
 							break;
 						case Foe :
 							if (map[i][j][k].isMoving) {
-									context.drawImage(image_set.foe[map[i][j][k].direction][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									context.drawImage(image_set.foe.frames[map[i][j][k].direction][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							} else {
-									context.drawImage(image_set.foe[map[i][j][k].direction][0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									context.drawImage(image_set.foe.frames[map[i][j][k].direction][0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							}
 							break;
 						case DestructibleWall :
-							context.drawImage(image_set.wall_destructible[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							context.drawImage(image_set.wall_destructible.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							break;
 						case Wall :
 							if (j==0 || j== map[i].length-1) {
-								context.drawImage(image_set.wall_vertical[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+								context.drawImage(image_set.wall_vertical.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							} else {
-								context.drawImage(image_set.wall_horizontal[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+								context.drawImage(image_set.wall_horizontal.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							} 
 							break;
 						case Bomb :
-							context.drawImage(image_set.bomb[map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							context.drawImage(image_set.bomb.frames[map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							break;
 						case Explosion :
-							context.drawImage(image_set.explosion[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							context.drawImage(image_set.explosion.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							break;
 						case Exit :
 							if (j==0 && map[i][j+1].length > 0 && map[i][j+1][0] instanceof DestructibleWall) {
-									context.drawImage(image_set.wall_vertical[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									context.drawImage(image_set.wall_vertical.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
 							} else if (j == map[i].length-1 && map[i][j-1].length > 0 && map[i][j-1][0] instanceof DestructibleWall) {
-									context.drawImage(image_set.wall_vertical[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									context.drawImage(image_set.wall_vertical.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
 							} else if (i == 0 && map[i+1][j].length > 0 && map[i+1][j][0] instanceof DestructibleWall) {
-									context.drawImage(image_set.wall_horizontal[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									context.drawImage(image_set.wall_horizontal.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
 							} else if (i == map.length-1 && map[i-1][j].length > 0 && map[i-1][j][0] instanceof DestructibleWall) {
-									context.drawImage(image_set.wall_horizontal[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+									context.drawImage(image_set.wall_horizontal.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 									break;
 							}
 					}
