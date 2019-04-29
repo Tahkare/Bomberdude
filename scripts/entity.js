@@ -152,6 +152,7 @@ class MovingEntity extends Entity{
         super(x,y, level);
         Object.defineProperty(this, "direction", {value : "DOWN" , writable : true });
         Object.defineProperty(this, "isMoving", {value : false , writable : true });
+		this.switched = false;
     }
     //methods
 
@@ -178,6 +179,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)+1][parseInt(this.x)].indexOf(this);
 						this.level.map[parseInt(this.y)+1][parseInt(this.x)].splice(pos,1);			
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
+						this.switch = true;
 					}
                     break;
                 case "DOWN" :
@@ -195,6 +197,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)-1][parseInt(this.x)].indexOf(this);
 						this.level.map[parseInt(this.y)-1][parseInt(this.x)].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
+						this.switch = true;
 					}
                     break;
                 case "LEFT" :
@@ -212,6 +215,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)][parseInt(this.x)+1].indexOf(this);
 						this.level.map[parseInt(this.y)][parseInt(this.x)+1].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
+						this.switch = true;
 						
 					}
                     break;
@@ -219,7 +223,7 @@ class MovingEntity extends Entity{
                     if (this.x % 1 >= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor !=  Explosion) {
 						return false;
 					}
-					if (this.y % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)]+1[parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor !=  Explosion) {
+					if (this.y % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor !=  Explosion) {
 						return false;
 					}
 					if (this.y % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor !=  Explosion) {
@@ -230,7 +234,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)][parseInt(this.x)-1].indexOf(this);
 						this.level.map[parseInt(this.y)][parseInt(this.x)-1].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
-						
+						this.switch = true;
 					}
                     break;
                 case "NONE" :
@@ -315,68 +319,26 @@ class Foe extends MovingEntity{
 		if (this.frame_counter == 0) {
 			this.frame = (this.frame + 1) % 4;
 		}
+		this.switched = false;
 		let not_blocked = this.move();
-		// TODO -> DEFINE DIRECTION
-		if(!not_blocked){
-
-			let rng = Math.floor(Math.random() * 3);
-			switch (this.direction){
-				case "UP"    :
-					switch (rng){
-						case 0 :
-							this.direction = "RIGHT";
-							break;
-						case 1 :
-							this.direction = "DOWN";
-							break;
-						case 2 :
-							this.direction = "LEFT";
-							break;
-					}
-					break;
-				case "DOWN"  :
-					switch (rng){
-						case 0 :
-							this.direction = "UP";
-							break;
-						case 1 :
-							this.direction = "RIGHT";
-							break;
-						case 2 :
-							this.direction = "LEFT";
-							break;
-					}
-					break;
-				case "LEFT"  :
-					switch (rng){
-						case 0 :
-							this.direction = "UP";
-							break;
-						case 1 :
-							this.direction = "RIGHT";
-							break;
-						case 2 :
-							this.direction = "DOWN";
-							break;
-					}
-					break;
-				case "RIGHT" :
-					switch (rng){
-						case 0 :
-							this.direction = "UP";
-							break;
-						case 1 :
-							this.direction = "LEFT";
-							break;
-						case 2 :
-							this.direction = "DOWN";
-							break;
-					}
-					break;
-				case "NONE"  :
-					console.log("a foe got blocked with diretion of NONE, shouldn't happen");
-					break;
+		if(!not_blocked || Math.random() < 0.1){
+			let directions = [];
+			if (this.level.map[parseInt(this.y)-1][parseInt(this.x)].length == 0 || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Foe || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Player || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Explosion) {
+				directions[directions.length] = "UP";
 			}
+			if (this.level.map[parseInt(this.y)+1][parseInt(this.x)].length == 0 || this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor == Foe || this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor == Player || this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor == Explosion) {
+				directions[directions.length] = "DOWN";
+			}
+			if (this.level.map[parseInt(this.y)][parseInt(this.x)-1].length == 0 || this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor == Foe || this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor == Player || this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor == Explosion) {
+				directions[directions.length] = "LEFT";
+			}
+			if (this.level.map[parseInt(this.y)][parseInt(this.x)+1].length == 0 || this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor == Foe || this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor == Player || this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor == Explosion) {
+				directions[directions.length] = "RIGHT";
+			}
+			
+			let rng = Math.floor(Math.random() * directions.length);
+			this.direction = directions[rng];
+			
 		}
 	}
 	
