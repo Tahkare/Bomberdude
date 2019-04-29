@@ -168,11 +168,11 @@ class MovingEntity extends Entity{
 						this.y += 0.04;
 						return false;
 					}
-					if (this.x % 1 >= 0.8 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe) {
+					if (this.x % 1 >= 0.7 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe) {
 						this.y += 0.04;
 						return false;
 					}
-					if (this.x % 1 <= 0.2 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe) {
+					if (this.x % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe) {
 						this.y += 0.04;
 						return false;
 					}
@@ -188,11 +188,11 @@ class MovingEntity extends Entity{
 						this.y -= 0.04;
 						return false;
 					}
-					if (this.x % 1 >= 0.8 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Foe) {
+					if (this.x % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Foe) {
 						this.y -= 0.04;
 						return false;
 					}
-					if (this.x % 1 <= 0.2 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe) {
+					if (this.x % 1 <= 0.3 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe) {
 						this.y -= 0.04;
 						return false;
 					}
@@ -208,11 +208,11 @@ class MovingEntity extends Entity{
 						this.x += 0.04;
 						return false;
 					}
-					if (this.y % 1 >= 0.8 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe) {
+					if (this.y % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe) {
 						this.x += 0.04;
 						return false;
 					}
-					if (this.y % 1 <= 0.2 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe) {
+					if (this.y % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe) {
 						this.x += 0.04;
 						return false;
 					}
@@ -229,11 +229,11 @@ class MovingEntity extends Entity{
 						this.x -= 0.04;
 						return false;
 					}
-					if (this.y % 1 >= 0.8 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)]+1[parseInt(this.x)+1][0].constructor != Foe) {
+					if (this.y % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)]+1[parseInt(this.x)+1][0].constructor != Foe) {
 						this.x -= 0.04;
 						return false;
 					}
-					if (this.y % 1 <= 0.2 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe) {
+					if (this.y % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe) {
 						this.x -= 0.04;
 						return false;
 					}

@@ -12,9 +12,9 @@ class MovingSprite extends Sprite {
 		super();
 		this.frames = []
 		this.directions = ["UP","DOWN","LEFT","RIGHT"];
-		for (let i=0;i<3;i++) {
+		for (let i=0;i<4;i++) {
 			this.frames[this.directions[i]] = [];
-			for (let j=0;j<3;j++) {
+			for (let j=0;j<4;j++) {
 				this.frames[this.directions[i]][j] = new Image();
 				if ((this.directions[i] == "UP" || this.directions[i] == "DOWN") && j >= 2) {
 					// Frame 2 -> image 0 and frame 3 -> image 2
