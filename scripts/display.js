@@ -1,11 +1,13 @@
 let canva = document.getElementById("cvn");
 let context = canva.getContext('2d');
 
+//Abstract class, mother of other Sprite type
 class Sprite {
 	/* Constructor */
 	constructor() {}
 }
 
+//For moving entities like player or foe
 class MovingSprite extends Sprite {
 	/* Constructor */
 	constructor(name) {
@@ -27,6 +29,7 @@ class MovingSprite extends Sprite {
 	}
 }
 
+//For other entities, that don't move, like bombs or walls
 class AnimatedSprite extends Sprite {
 	constructor(name,length) {
 		super();
@@ -58,6 +61,7 @@ let load_images = function() {
 
 const image_set = load_images();
 
+//drawing every object inside the canvas
 let draw_canva = function(map,started) {
 	context.clearRect(0, 0, canva.width, canva.height);
 	let gapX = canva.width / map[0].length;

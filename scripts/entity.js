@@ -122,7 +122,8 @@ class Explosion extends Entity {
 			}
 		}
     }
-    
+	
+	//last for 1/6 seconds
     update() {
 		this.frame_counter += 1
 		if (this.frame_counter == 10) {
@@ -259,8 +260,7 @@ class MovingEntity extends Entity{
 
 /*
  * Used only for players Entity
- * added attribute :
- *  - HP : the number of time, a player can be hit
+ * added attribute : bomb_count the number of bomb a player have pose on the level
  * 
  */
 class Player extends MovingEntity{
@@ -301,17 +301,95 @@ class Player extends MovingEntity{
 class Foe extends MovingEntity{
     /* CONSTRUCTORS */
     constructor(x, y, level){
-        super(x,y, level);
+		super(x,y, level);
+		this.isMoving = true;
+		let rng = Math.floor(Math.random() * 4);
+			switch (rng){
+				case 0 :
+					this.direction = "UP";
+					break;
+				case 1 :
+					this.direction = "RIGHT";
+					break;
+				case 2 :
+					this.direction = "DOWN";
+					break;
+				case 3 :
+					this.direction = "LEFT";
+					break;
+			}
     }
     //methods
     
     update() {
 		this.frame_counter = (this.frame_counter + 1) % 10;
+		//every 1/6 secondes, animate the foe
 		if (this.frame_counter == 0) {
 			this.frame = (this.frame + 1) % 4;
 		}
-		this.move();
+		let not_blocked = this.move();
 		// TODO -> DEFINE DIRECTION
+		if(!not_blocked){
+
+			let rng = Math.floor(Math.random() * 3);
+			switch (this.direction){
+				case "UP"    :
+					switch (rng){
+						case 0 :
+							this.direction = "RIGHT";
+							break;
+						case 1 :
+							this.direction = "DOWN";
+							break;
+						case 2 :
+							this.direction = "LEFT";
+							break;
+					}
+					break;
+				case "DOWN"  :
+					switch (rng){
+						case 0 :
+							this.direction = "UP";
+							break;
+						case 1 :
+							this.direction = "RIGHT";
+							break;
+						case 2 :
+							this.direction = "LEFT";
+							break;
+					}
+					break;
+				case "LEFT"  :
+					switch (rng){
+						case 0 :
+							this.direction = "UP";
+							break;
+						case 1 :
+							this.direction = "RIGHT";
+							break;
+						case 2 :
+							this.direction = "DOWN";
+							break;
+					}
+					break;
+				case "RIGHT" :
+					switch (rng){
+						case 0 :
+							this.direction = "UP";
+							break;
+						case 1 :
+							this.direction = "LEFT";
+							break;
+						case 2 :
+							this.direction = "DOWN";
+							break;
+					}
+					break;
+				case "NONE"  :
+					console.log("a foe got blocked with diretion of NONE, shouldn't happen");
+					break;
+			}
+		}
 	}
 	
 	onDestroy(){
