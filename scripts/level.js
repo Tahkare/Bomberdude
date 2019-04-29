@@ -30,7 +30,8 @@ class Level {
 		Object.defineProperty(this, "explosion_list", {value : [], writable : true});
 		
 		Object.defineProperty(this, "has_started", {value : false, writable : true});
-		
+		this.is_finished = false;
+		this.has_won = false;
 		document.getElementById("timer").innerHTML = "Timer : "+this.timer;
 		if (this.score > 0) {
 			document.getElementById("score").innerHTML = "Points to score : "+this.score;
@@ -107,25 +108,31 @@ class Level {
 			for (let i=0;i<this.explosion_list.length;i++) {
 				this.explosion_list[i].update();
 			}
-			if (this.counter == 0) {
-				this.timer -= 1;
-				document.getElementById("timer").innerHTML = "Timer : "+this.timer;
-			}
+
+			if (!this.is_finished) {
+				if (this.counter == 0) {
+					this.timer -= 1;
+					document.getElementById("timer").innerHTML = "Timer : "+this.timer;
+				}
 			
-			if (this.score > 0) {
-				document.getElementById("score").innerHTML = "Points to score : "+(this.score - this.current_score);
-			}
-			if (this.kill_all) {
-			document.getElementById("kill").innerHTML = "Foes to kill : "+this.foe_list.length;
-			}
-			if (this.destroy_all) {
-				document.getElementById("destroy").innerHTML = "Blocks to destroy : "+this.foe_list.length;
-			}
+				if (this.score > 0) {
+					document.getElementById("score").innerHTML = "Points to score : "+(this.score - this.current_score);
+				}
+				if (this.kill_all) {
+				document.getElementById("kill").innerHTML = "Foes to kill : "+this.foe_list.length;
+				}
+				if (this.destroy_all) {
+					document.getElementById("destroy").innerHTML = "Blocks to destroy : "+this.foe_list.length;
+				}
 			
-			if (this.is_lost()) {
-				end_level(false);
-			} else if (this.is_won()) {
-				end_level(true);
+				if (this.is_lost()) {
+					end_level(false);
+					this.is_finished = true;
+				} else if (this.is_won()) {
+					end_level(true);
+					this.is_finished = true;
+					this.has_won = true;
+				}
 			}
 		}
 	}

@@ -37,14 +37,14 @@ class ExplosionSprite extends Sprite {
 		this.frames = [];
 		this.positions = ["UP","DOWN","LEFT","RIGHT","CENTER"];
 		for (let i=0;i<5;i++) {
-			this.positions[this.directions[i]] = [];
+			this.frames[this.positions[i]] = [];
 			let nb = 1;
 			if (i==4) {
 				nb = 3;
 			}
 			for (let j=0;j<nb;j++) {
-				this.frames[this.directions[i]][j] = new Image();
-				this.frames[this.directions[i]][j].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + j + ".png";
+				this.frames[this.positions[i]][j] = new Image();
+				this.frames[this.positions[i]][j].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + j + ".png";
 			}
 		}
 	}

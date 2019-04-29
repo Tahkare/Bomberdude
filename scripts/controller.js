@@ -48,16 +48,19 @@ let click_event = function(event) {
 let view = function() {
 	console.log("Displaying the level");
 	draw_canva(level.map,level.has_started);
+	if (level.is_finished && level.has_won) {
+		display_win();
+	}
+	if (level.is_finished && !level.has_won) {
+		display_loss();
+	}
 	window.requestAnimationFrame(function() { level.update_level() });
 }
 
 //affichage de fin de partie.
 let end_level = function(has_won) {
-	if (!has_won) {
-		display_loss();
-	} else {
-		display_win();
-	}
+	level.is_finished = true;
+	setTimeout(() => {
 	document.getElementById("timer").innerHTML = "";
 	document.getElementById("score").innerHTML = "";
 	document.getElementById("kill").innerHTML = "";
@@ -75,7 +78,7 @@ let end_level = function(has_won) {
 						level = level_load("solo/level"+current_level+".json");
 						interval = window.setInterval(view,15);
 						 }, 4000);
-	}
+	}},1000);
 }
 
 let interval;
