@@ -12,7 +12,7 @@ class MovingSprite extends Sprite {
 	/* Constructor */
 	constructor(name) {
 		super();
-		this.frames = []
+		this.frames = [];
 		this.directions = ["UP","DOWN","LEFT","RIGHT"];
 		for (let i=0;i<4;i++) {
 			this.frames[this.directions[i]] = [];
@@ -24,6 +24,27 @@ class MovingSprite extends Sprite {
 				} else {
 					this.frames[this.directions[i]][j].src = "images/" + name + "_" + this.directions[i].toLowerCase() + "_" + j + ".png";
 				}
+			}
+		}
+	}
+}
+
+//For explosion entities
+class ExplosionSprite extends Sprite {
+	/* Constructor */
+	constructor(name) {
+		super();
+		this.frames = [];
+		this.positions = ["UP","DOWN","LEFT","RIGHT","CENTER"];
+		for (let i=0;i<5;i++) {
+			this.positions[this.directions[i]] = [];
+			let nb = 1;
+			if (i==4) {
+				nb = 3;
+			}
+			for (let j=0;j<nb;j++) {
+				this.frames[this.directions[i]][j] = new Image();
+				this.frames[this.directions[i]][j].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + j + ".png";
 			}
 		}
 	}
@@ -55,7 +76,7 @@ let load_images = function() {
 				wall_destructible : new AnimatedSprite("wall_destructible",1), 
 				ground : new AnimatedSprite("ground",1), 
 				bomb : new AnimatedSprite("bomb",6),
-				explosion : new AnimatedSprite("explosion",1)
+				explosion : new ExplosionSprite("explosion")
 			};
 }
 
@@ -104,7 +125,11 @@ let draw_canva = function(map,started) {
 							context.drawImage(image_set.bomb.frames[map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							break;
 						case Explosion :
-							context.drawImage(image_set.explosion.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							if (map[i][j][k].position == "CENTER") {
+								context.drawImage(image_set.explosion.frames["CENTER"][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							} else if (map[i][j][k].frame_counter > 1 && map[i][j][k].frame_counter < 8) {
+								context.drawImage(image_set.explosion.frames[map[i][j][k].position][0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							}
 							break;
 						case Exit :
 							if (j==0 && map[i][j+1].length > 0 && map[i][j+1][0] instanceof DestructibleWall) {

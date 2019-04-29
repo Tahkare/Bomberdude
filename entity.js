@@ -92,19 +92,19 @@ class Bomb extends Entity{
 		this.player.bomb_count -= 1;
 		
 		// We create 5 explosion entities on the 5 tiles where the explosion can have an effect
-		let explosion_1 = new Explosion(this.x,this.y,"CENTER",this.level);
+		let explosion_1 = new Explosion(this.x,this.y,this.level);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(0,0,explosion_1);
 		this.level.explosion_list.push(explosion_1);
-		let explosion_2 = new Explosion(this.x+1,this.y,"RIGHT",this.level);
+		let explosion_2 = new Explosion(this.x+1,this.y,this.level);
 		this.level.map[parseInt(this.y)][parseInt(this.x)+1].splice(0,0,explosion_2);
 		this.level.explosion_list.push(explosion_2);
-		let explosion_3 = new Explosion(this.x-1,this.y,"LEFT",this.level);
+		let explosion_3 = new Explosion(this.x-1,this.y,this.level);
 		this.level.map[parseInt(this.y)][parseInt(this.x)-1].splice(0,0,explosion_3);
 		this.level.explosion_list.push(explosion_3);
-		let explosion_4 = new Explosion(this.x,this.y+1,"DOWN",this.level);
+		let explosion_4 = new Explosion(this.x,this.y+1,this.level);
 		this.level.map[parseInt(this.y)+1][parseInt(this.x)].splice(0,0,explosion_4);
 		this.level.explosion_list.push(explosion_4);
-		let explosion_5 = new Explosion(this.x,this.y-1,"UP",this.level);
+		let explosion_5 = new Explosion(this.x,this.y-1,this.level);
 		this.level.map[parseInt(this.y)-1][parseInt(this.x)].splice(0,0,explosion_5);
 		this.level.explosion_list.push(explosion_5);
 	}
@@ -113,9 +113,8 @@ class Bomb extends Entity{
 
 class Explosion extends Entity {
 	/* CONSTRUCTORS */
-    constructor(x, y, position, level){
+    constructor(x, y, level){
         super(x,y,level);
-		this.position = position;
     }
 	
 	//last for 1/6 seconds
@@ -127,14 +126,6 @@ class Explosion extends Entity {
 			}
 		}
 		this.frame_counter += 1
-		if (this.position == "CENTER") {
-			if (this.frame_counter <= 2) {
-				this.frame = this.frame_counter;
-			}
-			if (this.frame_counter >= 7) {
-				this.frame = 9 - this.frame_counter;
-			}
-		}
 		if (this.frame_counter == 10) {
 			this.onDestroy();
 		}
@@ -188,7 +179,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)+1][parseInt(this.x)].indexOf(this);
 						this.level.map[parseInt(this.y)+1][parseInt(this.x)].splice(pos,1);			
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
-						this.switched = true;
+						this.switch = true;
 					}
                     break;
                 case "DOWN" :
@@ -206,7 +197,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)-1][parseInt(this.x)].indexOf(this);
 						this.level.map[parseInt(this.y)-1][parseInt(this.x)].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
-						this.switched = true;
+						this.switch = true;
 					}
                     break;
                 case "LEFT" :
@@ -224,7 +215,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)][parseInt(this.x)+1].indexOf(this);
 						this.level.map[parseInt(this.y)][parseInt(this.x)+1].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
-						this.switched = true;
+						this.switch = true;
 						
 					}
                     break;
@@ -243,7 +234,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)][parseInt(this.x)-1].indexOf(this);
 						this.level.map[parseInt(this.y)][parseInt(this.x)-1].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
-						this.switched = true;
+						this.switch = true;
 					}
                     break;
                 case "NONE" :
@@ -330,7 +321,7 @@ class Foe extends MovingEntity{
 		}
 		this.switched = false;
 		let not_blocked = this.move();
-		if(!not_blocked || (this.switched && Math.random() < 0.1)){
+		if(!not_blocked || Math.random() < 0.1){
 			let directions = [];
 			if (this.level.map[parseInt(this.y)-1][parseInt(this.x)].length == 0 || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Foe || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Player || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Explosion) {
 				directions[directions.length] = "UP";
