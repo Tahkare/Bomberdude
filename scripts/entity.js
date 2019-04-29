@@ -179,7 +179,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)+1][parseInt(this.x)].indexOf(this);
 						this.level.map[parseInt(this.y)+1][parseInt(this.x)].splice(pos,1);			
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
-						this.switch = true;
+						this.switched = true;
 					}
                     break;
                 case "DOWN" :
@@ -197,7 +197,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)-1][parseInt(this.x)].indexOf(this);
 						this.level.map[parseInt(this.y)-1][parseInt(this.x)].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
-						this.switch = true;
+						this.switched = true;
 					}
                     break;
                 case "LEFT" :
@@ -215,7 +215,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)][parseInt(this.x)+1].indexOf(this);
 						this.level.map[parseInt(this.y)][parseInt(this.x)+1].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
-						this.switch = true;
+						this.switched = true;
 						
 					}
                     break;
@@ -234,7 +234,7 @@ class MovingEntity extends Entity{
 						let pos = this.level.map[parseInt(this.y)][parseInt(this.x)-1].indexOf(this);
 						this.level.map[parseInt(this.y)][parseInt(this.x)-1].splice(pos,1);
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
-						this.switch = true;
+						this.switched = true;
 					}
                     break;
                 case "NONE" :
@@ -321,7 +321,7 @@ class Foe extends MovingEntity{
 		}
 		this.switched = false;
 		let not_blocked = this.move();
-		if(!not_blocked || Math.random() < 0.1){
+		if(!not_blocked || (this.switched && Math.random() < 0.1)){
 			let directions = [];
 			if (this.level.map[parseInt(this.y)-1][parseInt(this.x)].length == 0 || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Foe || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Player || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Explosion) {
 				directions[directions.length] = "UP";
