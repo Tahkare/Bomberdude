@@ -115,16 +115,16 @@ class Explosion extends Entity {
 	/* CONSTRUCTORS */
     constructor(x, y, level){
         super(x,y,level);
-        for (let i=0;i<this.level.map[parseInt(this.y)][parseInt(this.x)].length;i++) {
+    }
+	
+	//last for 1/6 seconds
+    update() {
+		for (let i=0;i<this.level.map[parseInt(this.y)][parseInt(this.x)].length;i++) {
 			let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 			if (i != pos) {
 				this.level.map[parseInt(this.y)][parseInt(this.x)][i].onDestroy();
 			}
 		}
-    }
-	
-	//last for 1/6 seconds
-    update() {
 		this.frame_counter += 1
 		if (this.frame_counter == 10) {
 			this.onDestroy();
@@ -164,13 +164,13 @@ class MovingEntity extends Entity{
         if(this.isMoving) {
             switch (this.direction){
                 case "UP" :
-                    if (this.y % 1 <= 0.5 && this.level.map[parseInt(this.y)-1][parseInt(this.x)].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Player) {
+                    if (this.y % 1 <= 0.5 && this.level.map[parseInt(this.y)-1][parseInt(this.x)].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Player  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor !=  Explosion) {
 						return false;
 					}
-					if (this.x % 1 >= 0.7 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Player) {
+					if (this.x % 1 >= 0.7 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor !=  Explosion) {
 						return false;
 					}
-					if (this.x % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Player) {
+					if (this.x % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Player  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor !=  Explosion) {
 						return false;
 					}
 					this.y -= 0.04;
@@ -181,13 +181,13 @@ class MovingEntity extends Entity{
 					}
                     break;
                 case "DOWN" :
-                    if (this.y % 1 >= 0.5 && this.level.map[parseInt(this.y)+1][parseInt(this.x)].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Player) {
+                    if (this.y % 1 >= 0.5 && this.level.map[parseInt(this.y)+1][parseInt(this.x)].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor !=  Explosion) {
 						return false;
 					}
-					if (this.x % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Player) {
+					if (this.x % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor !=  Explosion) {
 						return false;
 					}
-					if (this.x % 1 <= 0.3 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Player) {
+					if (this.x % 1 <= 0.3 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor !=  Explosion) {
 						return false;
 					}
 					this.y += 0.04;
@@ -198,13 +198,13 @@ class MovingEntity extends Entity{
 					}
                     break;
                 case "LEFT" :
-                    if (this.x % 1 <= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Player) {
+                    if (this.x % 1 <= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Player  && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor !=  Explosion) {
 						return false;
 					}
-					if (this.y % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Player) {
+					if (this.y % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor !=  Explosion) {
 						return false;
 					}
-					if (this.y % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Player) {
+					if (this.y % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor !=  Explosion) {
 						return false;
 					}
                     this.x -= 0.04;
@@ -216,13 +216,13 @@ class MovingEntity extends Entity{
 					}
                     break;
                 case "RIGHT" :
-                    if (this.x % 1 >= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Player) {
+                    if (this.x % 1 >= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor !=  Explosion) {
 						return false;
 					}
-					if (this.y % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)]+1[parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Player) {
+					if (this.y % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)]+1[parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor !=  Explosion) {
 						return false;
 					}
-					if (this.y % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Player) {
+					if (this.y % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor !=  Explosion) {
 						return false;
 					}
                     this.x += 0.04;
