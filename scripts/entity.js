@@ -65,8 +65,9 @@ class DestructibleWall extends Wall{
 class Bomb extends Entity{
     /* CONSTRUCTORS */
     constructor(x, y, level,player){
-        super(x,y,level);
-        this.player = player;
+		super(x,y,level);
+		Object.defineProperty(this, "player", {value : player, writable : false});
+		Object.defineProperty(this, "power", {value : player.bombs_power, writable : false});
     }
     // methods
     // Animated every 20 loops
@@ -91,31 +92,65 @@ class Bomb extends Entity{
 		// The owner's bomb count is reduced by 1
 		this.player.bomb_count -= 1;
 		
-		// We create 5 explosion entities on the 5 tiles where the explosion can have an effect
-		let explosion_1 = new Explosion(this.x,this.y,"CENTER",this.level);
-		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(0,0,explosion_1);
-		this.level.explosion_list.push(explosion_1);
-		let explosion_2 = new Explosion(this.x+1,this.y,"RIGHT",this.level);
-		this.level.map[parseInt(this.y)][parseInt(this.x)+1].splice(0,0,explosion_2);
-		this.level.explosion_list.push(explosion_2);
-		let explosion_3 = new Explosion(this.x-1,this.y,"LEFT",this.level);
-		this.level.map[parseInt(this.y)][parseInt(this.x)-1].splice(0,0,explosion_3);
-		this.level.explosion_list.push(explosion_3);
-		let explosion_4 = new Explosion(this.x,this.y+1,"DOWN",this.level);
-		this.level.map[parseInt(this.y)+1][parseInt(this.x)].splice(0,0,explosion_4);
-		this.level.explosion_list.push(explosion_4);
-		let explosion_5 = new Explosion(this.x,this.y-1,"UP",this.level);
-		this.level.map[parseInt(this.y)-1][parseInt(this.x)].splice(0,0,explosion_5);
-		this.level.explosion_list.push(explosion_5);
+		// We create explosions entities on the center and the four directions where the explosion can have an effect
+		let explosion_center = new Explosion(this.x,this.y,"CENTER",this.level);
+		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(0,0,explosion_center);
+		this.level.explosion_list.push(explosion_center);
+		//for each directions :
+		for(let i = 1; i < this.power + 1 ; i++){
+			let spread = true;
+			//if the explosion enounter something else than a Foe or a Player, then stop spreading !(explosion_case[0] instanceof MovingEntity)
+			if(this.level.map[parseInt(this.y)][parseInt(this.x)+i].length != 0 && !(this.level.map[parseInt(this.y)][parseInt(this.x)+i][0] instanceof MovingEntity)){ spread = false;}
+			let last = false;
+			//check if it's the explosion extremity
+			if(i == this.power){ last = true;}
+			let explosion_RIGHT = new Explosion(this.x+i,this.y,"RIGHT",this.level, last);
+			this.level.map[parseInt(this.y)][parseInt(this.x)+i].splice(0,0,explosion_RIGHT);
+			this.level.explosion_list.push(explosion_RIGHT);
+			if(!spread){break;}
+		}
+		for(let i = 1; i < this.power + 1 ; i++){
+			let spread = true;
+			if(this.level.map[parseInt(this.y)][parseInt(this.x)-i].length != 0 && !(this.level.map[parseInt(this.y)][parseInt(this.x)-i][0] instanceof MovingEntity)){ spread = true;} 
+			let last = false;
+			if(i == this.power){ last = true;}
+			let explosion_LEFT = new Explosion(this.x-i,this.y,"LEFT",this.level, last);
+			this.level.map[parseInt(this.y)][parseInt(this.x)-i].splice(0,0,explosion_LEFT);
+			this.level.explosion_list.push(explosion_LEFT);
+			if(!spread){break;}
+		}
+		for(let i = 1; i < this.power + 1 ; i++){
+			let spread = true;
+			if(this.level.map[parseInt(this.y)+i][parseInt(this.x)].length != 0 && !(this.level.map[parseInt(this.y)+i][parseInt(this.x)][0] instanceof MovingEntity)){ spread = true;} 
+			let last = false;
+			if(i == this.power){ last = true;}
+			let explosion_DOWN = new Explosion(this.x,this.y+i,"DOWN",this.level, last);
+			this.level.map[parseInt(this.y)+i][parseInt(this.x)].splice(0,0,explosion_DOWN);
+			this.level.explosion_list.push(explosion_DOWN);
+			if(!spread){break;}
+		}
+		for(let i = 1; i < this.power + 1 ; i++){
+			let spread = true;
+			if(this.level.map[parseInt(this.y)-i][parseInt(this.x)].length != 0 && !(this.level.map[parseInt(this.y)-i][parseInt(this.x)][0] instanceof MovingEntity)){ spread = true;} 
+			let last = false;
+			if(i == this.power){ last = true;}
+			let explosion_UP = new Explosion(this.x,this.y-i,"UP",this.level, last);
+			this.level.map[parseInt(this.y)-i][parseInt(this.x)].splice(0,0,explosion_UP);
+			this.level.explosion_list.push(explosion_UP);
+			if(!spread){break;}
+		}
 	}
 }
 
 
 class Explosion extends Entity {
 	/* CONSTRUCTORS */
-    constructor(x, y, position, level){
-        super(x,y,level);
-		this.position = position;
+    constructor(x, y, position, level, last){
+		super(x,y,level);
+		Object.defineProperty(this, "position", {value : position, writable : false});
+		if(position != "CENTER" && last){
+			this.frame = 1;
+		}
     }
 	
 	//last for 1/6 seconds
@@ -126,6 +161,7 @@ class Explosion extends Entity {
 				this.level.map[parseInt(this.y)][parseInt(this.x)][i].onDestroy();
 			}
 		}
+		
 		this.frame_counter += 1
 		if (this.position == "CENTER") {
 			if (this.frame_counter <= 2) {
@@ -268,7 +304,8 @@ class Player extends MovingEntity{
     /* CONSTRUCTORS */
     constructor(x, y, level){
         super(x,y,level);
-        Object.defineProperty(this, "bomb_count", {value : 0, writable : true});
+		Object.defineProperty(this, "bomb_count", {value : 0, writable : true});
+		Object.defineProperty(this, "bombs_power", {value : 3, writable : true});
     }
     
     //methods

@@ -38,13 +38,17 @@ class ExplosionSprite extends Sprite {
 		this.positions = ["UP","DOWN","LEFT","RIGHT","CENTER"];
 		for (let i=0;i<5;i++) {
 			this.frames[this.positions[i]] = [];
-			let nb = 1;
 			if (i==4) {
-				nb = 3;
+				for (let j=0;j<3;j++) {
+					this.frames[this.positions[i]][j] = new Image();
+					this.frames[this.positions[i]][j].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + j + ".png";
+				}
 			}
-			for (let j=0;j<nb;j++) {
-				this.frames[this.positions[i]][j] = new Image();
-				this.frames[this.positions[i]][j].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + j + ".png";
+			else{
+				this.frames[this.positions[i]][0] = new Image();
+				this.frames[this.positions[i]][0].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + 0 + ".png";
+				this.frames[this.positions[i]][1] = new Image();
+				this.frames[this.positions[i]][1].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + 1 + ".png";
 			}
 		}
 	}
@@ -128,7 +132,7 @@ let draw_canva = function(map,started) {
 							if (map[i][j][k].position == "CENTER") {
 								context.drawImage(image_set.explosion.frames["CENTER"][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							} else if (map[i][j][k].frame_counter > 1 && map[i][j][k].frame_counter < 8) {
-								context.drawImage(image_set.explosion.frames[map[i][j][k].position][0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+								context.drawImage(image_set.explosion.frames[map[i][j][k].position][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							}
 							break;
 						case Exit :
