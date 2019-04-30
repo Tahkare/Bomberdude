@@ -73,7 +73,7 @@ class Bomb extends Entity{
     // Animated every 20 loops
     // explodes after 120 loops (2 seconds)
     update() {
-		this.frame_counter = (this.frame_counter + 1) % 20;
+		this.frame_counter = (this.frame_counter + 1) % 30;
 		if (this.frame_counter == 0) {
 			this.frame += 1;
 		}
@@ -111,7 +111,7 @@ class Bomb extends Entity{
 		}
 		for(let i = 1; i < this.power + 1 ; i++){
 			let spread = true;
-			if(this.level.map[parseInt(this.y)][parseInt(this.x)-i].length != 0 && !(this.level.map[parseInt(this.y)][parseInt(this.x)-i][0] instanceof MovingEntity)){ spread = true;} 
+			if(this.level.map[parseInt(this.y)][parseInt(this.x)-i].length != 0 && !(this.level.map[parseInt(this.y)][parseInt(this.x)-i][0] instanceof MovingEntity)){ spread = false;} 
 			let last = false;
 			if(i == this.power){ last = true;}
 			let explosion_LEFT = new Explosion(this.x-i,this.y,"LEFT",this.level, last);
@@ -121,7 +121,7 @@ class Bomb extends Entity{
 		}
 		for(let i = 1; i < this.power + 1 ; i++){
 			let spread = true;
-			if(this.level.map[parseInt(this.y)+i][parseInt(this.x)].length != 0 && !(this.level.map[parseInt(this.y)+i][parseInt(this.x)][0] instanceof MovingEntity)){ spread = true;} 
+			if(this.level.map[parseInt(this.y)+i][parseInt(this.x)].length != 0 && !(this.level.map[parseInt(this.y)+i][parseInt(this.x)][0] instanceof MovingEntity)){ spread = false;} 
 			let last = false;
 			if(i == this.power){ last = true;}
 			let explosion_DOWN = new Explosion(this.x,this.y+i,"DOWN",this.level, last);
@@ -131,7 +131,7 @@ class Bomb extends Entity{
 		}
 		for(let i = 1; i < this.power + 1 ; i++){
 			let spread = true;
-			if(this.level.map[parseInt(this.y)-i][parseInt(this.x)].length != 0 && !(this.level.map[parseInt(this.y)-i][parseInt(this.x)][0] instanceof MovingEntity)){ spread = true;} 
+			if(this.level.map[parseInt(this.y)-i][parseInt(this.x)].length != 0 && !(this.level.map[parseInt(this.y)-i][parseInt(this.x)][0] instanceof MovingEntity)){ spread = false;} 
 			let last = false;
 			if(i == this.power){ last = true;}
 			let explosion_UP = new Explosion(this.x,this.y-i,"UP",this.level, last);
@@ -167,11 +167,11 @@ class Explosion extends Entity {
 			if (this.frame_counter <= 2) {
 				this.frame = this.frame_counter;
 			}
-			if (this.frame_counter >= 7) {
-				this.frame = 9 - this.frame_counter;
+			if (this.frame_counter >= 17) {
+				this.frame = 19 - this.frame_counter;
 			}
 		}
-		if (this.frame_counter == 10) {
+		if (this.frame_counter == 20) {
 			this.onDestroy();
 		}
 	}

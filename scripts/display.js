@@ -131,7 +131,7 @@ let draw_canva = function(map,started) {
 						case Explosion :
 							if (map[i][j][k].position == "CENTER") {
 								context.drawImage(image_set.explosion.frames["CENTER"][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
-							} else if (map[i][j][k].frame_counter > 1 && map[i][j][k].frame_counter < 8) {
+							} else if (map[i][j][k].frame_counter > 1 && map[i][j][k].frame_counter < 18) {
 								context.drawImage(image_set.explosion.frames[map[i][j][k].position][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							}
 							break;
