@@ -52,9 +52,9 @@ class DestructibleWall extends Wall{
     // When it should be destroyed, we remove it from the map and the list of destructible walls, then adding a powerUp if lucky
     onDestroy() {
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
-		//this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
-		let pUp = new PowerUp(parseInt(this.x), parseInt(this.y), this.level)
-		this.level.map[parseInt(this.y)][parseInt(this.x)][pos] = pUp;
+		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
+		let pUp = new PowerUp(this.x, this.y, this.level)
+		this.level.map[parseInt(this.y)][parseInt(this.x)].push(pUp);
 		this.level.powerUp_list.push(pUp);
 		pos = this.level.block_list.indexOf(this);
 		this.level.block_list.splice(pos,1);
@@ -199,6 +199,7 @@ class PowerUp extends Entity{
 
 	//methods
 	onPickUp(player){
+		console.log("pickup");
 		//effect of the power up on the player
 		switch (this.type){
 			case "powerBombs" :
@@ -212,14 +213,15 @@ class PowerUp extends Entity{
 		//removing the power up from the game
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
+		pos = this.level.powerUp_list.indexOf(this);
+		this.level.powerUp_list.splice(pos,1);
 	}
 
 	update(){
-		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
+		console.log("update");
 		for(let i = 0; i < this.level.map[parseInt(this.y)][parseInt(this.x)].length; i++){
 			if(this.level.map[parseInt(this.y)][parseInt(this.x)][i] instanceof Player){
 				this.onPickUp(this.level.map[parseInt(this.y)][parseInt(this.x)][i]);
-				this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
 				break;
 			}
 		}
