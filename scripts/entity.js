@@ -194,7 +194,7 @@ class PowerUp extends Entity{
 		super(x,y, level);
 		let rng = Math.random();
 		let type;
-		if(rng > 0.3){ type = "powerBombs";}
+		if(rng > 0.6){ type = "powerBombs";}
 		else{ type = "moreBombs";}
 		Object.defineProperty(this, "type", {value : type, writable : false});
 	}
