@@ -199,7 +199,6 @@ class PowerUp extends Entity{
 
 	//methods
 	onPickUp(player){
-		console.log("pickup");
 		//effect of the power up on the player
 		switch (this.type){
 			case "powerBombs" :
@@ -218,7 +217,6 @@ class PowerUp extends Entity{
 	}
 
 	update(){
-		console.log("update");
 		for(let i = 0; i < this.level.map[parseInt(this.y)][parseInt(this.x)].length; i++){
 			if(this.level.map[parseInt(this.y)][parseInt(this.x)][i] instanceof Player){
 				this.onPickUp(this.level.map[parseInt(this.y)][parseInt(this.x)][i]);
