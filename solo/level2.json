@@ -12,7 +12,7 @@
 		  "| M-- |+|- -- |",
 		  "==============="],
  "score":0,
- "timer":75,
+ "timer":200,
  "kill_all":true,
  "destroy_all":false,
  "is_multi":false

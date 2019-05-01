@@ -53,9 +53,11 @@ class DestructibleWall extends Wall{
     onDestroy() {
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
-		let pUp = new PowerUp(this.x, this.y, this.level)
-		this.level.map[parseInt(this.y)][parseInt(this.x)].push(pUp);
-		this.level.powerUp_list.push(pUp);
+		if(Math.random() > 0.6){
+			let pUp = new PowerUp(this.x, this.y, this.level)
+			this.level.map[parseInt(this.y)][parseInt(this.x)].push(pUp);
+			this.level.powerUp_list.push(pUp);
+		}
 		pos = this.level.block_list.indexOf(this);
 		this.level.block_list.splice(pos,1);
 	}
