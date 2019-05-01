@@ -28,6 +28,7 @@ class Level {
 		Object.defineProperty(this, "exit_list", {value : [], writable : true});
 		Object.defineProperty(this, "bomb_list", {value : [], writable : true});
 		Object.defineProperty(this, "explosion_list", {value : [], writable : true});
+		Object.defineProperty(this, "powerUp_list", {value : [], writable : true});
 		
 		Object.defineProperty(this, "has_started", {value : false, writable : true});
 		this.is_finished = false;
@@ -107,6 +108,9 @@ class Level {
 			}
 			for (let i=0;i<this.explosion_list.length;i++) {
 				this.explosion_list[i].update();
+			}
+			for (let i=0;i<this.powerUp_list.length;i++) {
+				this.powerUp_list[i].update();
 			}
 
 			if (!this.is_finished) {

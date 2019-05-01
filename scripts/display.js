@@ -80,7 +80,8 @@ let load_images = function() {
 				wall_destructible : new AnimatedSprite("wall_destructible",1), 
 				ground : new AnimatedSprite("ground",1), 
 				bomb : new AnimatedSprite("bomb",6),
-				explosion : new ExplosionSprite("explosion")
+				explosion : new ExplosionSprite("explosion"),
+				powerUp : new AnimatedSprite("powerup", 2)
 			};
 }
 
@@ -133,6 +134,15 @@ let draw_canva = function(map,started) {
 								context.drawImage(image_set.explosion.frames["CENTER"][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							} else if (map[i][j][k].frame_counter > 1 && map[i][j][k].frame_counter < 18) {
 								context.drawImage(image_set.explosion.frames[map[i][j][k].position][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							}
+							break;
+						case PowerUp :
+							if(map[i][j][k].type == "powerBombs"){
+								context.drawImage(image_set.powerUp.frames[1], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							} else if(map[i][j][k].type == "moreBombs"){
+								context.drawImage(image_set.powerUp.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
+							} else{
+								console.log("Unhandled power up display. TYPE = " + map[i][j][k].type);
 							}
 							break;
 						case Exit :
