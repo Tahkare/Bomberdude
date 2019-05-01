@@ -70,8 +70,8 @@ class Bomb extends Entity{
 		Object.defineProperty(this, "power", {value : player.bombs_power, writable : false});
     }
     // methods
-    // Animated every 20 loops
-    // explodes after 120 loops (2 seconds)
+    // Animated every 30 loops
+    // explodes after 180 loops (3 seconds)
     update() {
 		this.frame_counter = (this.frame_counter + 1) % 30;
 		if (this.frame_counter == 0) {
@@ -142,7 +142,6 @@ class Bomb extends Entity{
 	}
 }
 
-
 class Explosion extends Entity {
 	/* CONSTRUCTORS */
     constructor(x, y, position, level, last){
@@ -182,6 +181,35 @@ class Explosion extends Entity {
 		pos = this.level.explosion_list.indexOf(this);
 		this.level.explosion_list.splice(pos,1);
     }
+}
+
+class PowerUp extends Entity{
+	/* CONSTRUCTORS */
+    constructor(x, y, level){
+		super(x,y, level);
+		let rng = Math.random();
+		let type;
+		if(rng > 0.3){ type = "powerBombs";}
+		else{ type = "moreBombs";}
+		Object.defineProperty(this, "type", {value : type, writable : false});
+	}
+
+	//methods
+	onPickUp(player){
+		//effect of the power up on the player
+		switch (this.type){
+			case "powerBombs" :
+				player.bombs_power = player.bombs_power + 1;
+				break;
+			
+			case "moreBombs" :
+				player.max_bombs = player.max_bombs + 1;
+				break;
+		}
+		//removing the power up from the game
+		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
+		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
+	}
 }
 
 /*
@@ -285,7 +313,6 @@ class MovingEntity extends Entity{
                 case "NONE" :
                     console.log("MovingEntity.onMove, called with NONE direction && isMoving == true");
                     return false;
-                    break;
             }
         } else {
 			this.frame = 0;
@@ -305,7 +332,8 @@ class Player extends MovingEntity{
     constructor(x, y, level){
         super(x,y,level);
 		Object.defineProperty(this, "bomb_count", {value : 0, writable : true});
-		Object.defineProperty(this, "bombs_power", {value : 3, writable : true});
+		Object.defineProperty(this, "max_bombs", {value : 1, writable : true});
+		Object.defineProperty(this, "bombs_power", {value : 1, writable : true});
     }
     
     //methods

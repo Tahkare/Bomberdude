@@ -162,9 +162,9 @@ class Level {
 	// Créer -> ajouter à la map / à la liste -> linker au joueur
 	drop_bomb(entity){
 		if (this.has_started) {
-			if (entity.bomb_count == 0) {
+			if (entity.bomb_count < entity.max_bombs) {
 				let bomb = new Bomb (parseInt(entity.x)+0.5, parseInt(entity.y)+0.5, this, entity);
-				entity.bomb_count = 1;
+				entity.bomb_count = entity.bomb_count + 1;
 				let entity_pos = this.map[parseInt(bomb.y)][parseInt(bomb.x)].indexOf(entity);
 				this.map[parseInt(bomb.y)][parseInt(bomb.x)][entity_pos+1] = entity;
 				this.map[parseInt(bomb.y)][parseInt(bomb.x)][entity_pos] = bomb;
