@@ -105,7 +105,7 @@ class Bomb extends Entity{
 		for(let i = 1; i < this.power + 1 ; i++){
 			let spread = true;
 			//if the explosion enounter something else than a Foe or a Player, then stop spreading !(explosion_case[0] instanceof MovingEntity)
-			if(this.level.map[parseInt(this.y)][parseInt(this.x)+i].length != 0 && !(this.level.map[parseInt(this.y)][parseInt(this.x)+i][0] instanceof MovingEntity)){ spread = false;}
+			if(this.level.map[parseInt(this.y)][parseInt(this.x)+i].length != 0 && !(this.level.map[parseInt(this.y)][parseInt(this.x)+i][0] instanceof MovingEntity || this.level.map[parseInt(this.y)][parseInt(this.x)+i][0] instanceof PowerUp)){ spread = false;}
 			let last = false;
 			//check if it's the explosion extremity
 			if(i == this.power){ last = true;}
@@ -116,7 +116,7 @@ class Bomb extends Entity{
 		}
 		for(let i = 1; i < this.power + 1 ; i++){
 			let spread = true;
-			if(this.level.map[parseInt(this.y)][parseInt(this.x)-i].length != 0 && !(this.level.map[parseInt(this.y)][parseInt(this.x)-i][0] instanceof MovingEntity)){ spread = false;} 
+			if(this.level.map[parseInt(this.y)][parseInt(this.x)-i].length != 0 && !(this.level.map[parseInt(this.y)][parseInt(this.x)-i][0] instanceof MovingEntity || this.level.map[parseInt(this.y)][parseInt(this.x)+i][0] instanceof PowerUp)){ spread = false;} 
 			let last = false;
 			if(i == this.power){ last = true;}
 			let explosion_LEFT = new Explosion(this.x-i,this.y,"LEFT",this.level, last);
@@ -126,7 +126,7 @@ class Bomb extends Entity{
 		}
 		for(let i = 1; i < this.power + 1 ; i++){
 			let spread = true;
-			if(this.level.map[parseInt(this.y)+i][parseInt(this.x)].length != 0 && !(this.level.map[parseInt(this.y)+i][parseInt(this.x)][0] instanceof MovingEntity)){ spread = false;} 
+			if(this.level.map[parseInt(this.y)+i][parseInt(this.x)].length != 0 && !(this.level.map[parseInt(this.y)+i][parseInt(this.x)][0] instanceof MovingEntity || this.level.map[parseInt(this.y)][parseInt(this.x)+i][0] instanceof PowerUp)){ spread = false;} 
 			let last = false;
 			if(i == this.power){ last = true;}
 			let explosion_DOWN = new Explosion(this.x,this.y+i,"DOWN",this.level, last);
@@ -136,7 +136,7 @@ class Bomb extends Entity{
 		}
 		for(let i = 1; i < this.power + 1 ; i++){
 			let spread = true;
-			if(this.level.map[parseInt(this.y)-i][parseInt(this.x)].length != 0 && !(this.level.map[parseInt(this.y)-i][parseInt(this.x)][0] instanceof MovingEntity)){ spread = false;} 
+			if(this.level.map[parseInt(this.y)-i][parseInt(this.x)].length != 0 && !(this.level.map[parseInt(this.y)-i][parseInt(this.x)][0] instanceof MovingEntity || this.level.map[parseInt(this.y)][parseInt(this.x)+i][0] instanceof PowerUp)){ spread = false;} 
 			let last = false;
 			if(i == this.power){ last = true;}
 			let explosion_UP = new Explosion(this.x,this.y-i,"UP",this.level, last);
