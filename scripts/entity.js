@@ -406,9 +406,8 @@ class Player extends MovingEntity{
 				this.bomb_count = this.bomb_count + 1;
 				// On met la bombe dans la case et on remet le joueur par dessus
 				let entity_pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
-				this.map[parseInt(this.y)][parseInt(this.x)][entity_pos] = bomb;
-				this.map[parseInt(this.y)][parseInt(this.x)].push(this);
-				this.bomb_list.push(bomb);
+				this.level.map[parseInt(this.y)][parseInt(this.x)][entity_pos] = bomb;
+				this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
 				console.log("Bomb has been planted");
 			}
 		}
@@ -460,8 +459,8 @@ class Foe extends MovingEntity{
 		// On regarde si l'entité arrive à se déplacer
 		this.switched = false;
 		let not_blocked = this.move();
-		if(!not_blocked || (this.switched && Math.random() < 0.10)){
-			// Si elle est bloquée ou qu'on vient d'arriver au milieu d'une case et qu'on tire un nombre inférieur à 0.1, on change de direction
+		if(!not_blocked || (this.switched && Math.random() < 0.05)){
+			// Si elle est bloquée ou qu'on vient d'arriver au milieu d'une case et qu'on tire un nombre inférieur à 0.05, on change de direction
 			let directions = [];
 			if (this.level.map[parseInt(this.y)-1][parseInt(this.x)].length == 0 || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Foe || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Player || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Explosion) {
 				directions[directions.length] = "UP";

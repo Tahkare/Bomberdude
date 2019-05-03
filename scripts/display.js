@@ -40,10 +40,11 @@ class ExplosionSprite extends Sprite {
 		// On charge 3 images pour le centre et 2 pour le reste
 		for (let i=0;i<5;i++) {
 			this.frames[this.positions[i]] = [];
+			let nb;
 			if (i==4) {
-				let nb = 3;
+				nb = 3;
 			} else {
-				let nb = 2;
+				nb = 2;
 			}
 			for (let j=0;j<nb;j++) {
 				this.frames[this.positions[i]][j] = new Image();

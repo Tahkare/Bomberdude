@@ -7,7 +7,7 @@ class Level {
 		// Les différents objectifs à atteindre
 		this.score = score;			// score à atteindre
 		this.current_score = 0;		// score actuel
-		this.time = timer;			// temps restant
+		this.timer = timer;			// temps restant
 		this.kill_all = kill_all;	// est-ce qu'on doit tuer tous les ennemis
 		this.destroy_all = destroy_all;// est-ce qu'on doit détruire tous les blocs
 		this.is_multi = is_multi;	// est-ce que c'est multi-joueur
@@ -37,7 +37,6 @@ class Level {
 	// On définit les joueurs et sorties ainsi que le nombre d'ennemis et de blocs destructibles
 	set_values(player_list, exit_list, nb_foes, nb_blocks) {
 		this.player_list = player_list;
-		this.foe_list = foe_list;
 		this.nb_blocks = nb_blocks;
 		this.nb_foes = nb_foes;
 		if (this.kill_all) {
@@ -120,10 +119,10 @@ class Level {
 					document.getElementById("score").innerHTML = "Points to score : "+(this.score - this.current_score);
 				}
 				if (this.kill_all) {
-				document.getElementById("kill").innerHTML = "Foes to kill : "+this.foe_list.length;
+				document.getElementById("kill").innerHTML = "Foes to kill : "+this.nb_foes;
 				}
 				if (this.destroy_all) {
-					document.getElementById("destroy").innerHTML = "Blocks to destroy : "+this.foe_list.length;
+					document.getElementById("destroy").innerHTML = "Blocks to destroy : "+this.nb_blocks;
 				}
 			
 				if (this.is_lost()) {

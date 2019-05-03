@@ -47,7 +47,7 @@ let level_load = function(filename) {
 	}
 	// On donne les infos au niveau
 	result_level.set_map(map);
-	result_level.set_lists(player_list, exit_list, nb_foes, nb_blocks);
+	result_level.set_values(player_list, exit_list, nb_foes, nb_blocks);
 	// On le renvoie
 	return result_level;
 }
