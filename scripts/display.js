@@ -1,19 +1,21 @@
 let canva = document.getElementById("cvn");
 let context = canva.getContext('2d');
 
-//Abstract class, mother of other Sprite type
+//Classe abstraite
 class Sprite {
 	/* Constructor */
-	constructor() {}
+	constructor() {
+		this.frames = [];
+	}
 }
 
-//For moving entities like player or foe
+//Entités personnages
 class MovingSprite extends Sprite {
 	/* Constructor */
 	constructor(name) {
 		super();
-		this.frames = [];
 		this.directions = ["UP","DOWN","LEFT","RIGHT"];
+		// On charge les 4 frames pour les 4 directions
 		for (let i=0;i<4;i++) {
 			this.frames[this.directions[i]] = [];
 			for (let j=0;j<4;j++) {
@@ -29,36 +31,32 @@ class MovingSprite extends Sprite {
 	}
 }
 
-//For explosion entities
+//Entités d'explosion
 class ExplosionSprite extends Sprite {
 	/* Constructor */
 	constructor(name) {
 		super();
-		this.frames = [];
 		this.positions = ["UP","DOWN","LEFT","RIGHT","CENTER"];
+		// On charge 3 images pour le centre et 2 pour le reste
 		for (let i=0;i<5;i++) {
 			this.frames[this.positions[i]] = [];
 			if (i==4) {
-				for (let j=0;j<3;j++) {
-					this.frames[this.positions[i]][j] = new Image();
-					this.frames[this.positions[i]][j].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + j + ".png";
-				}
+				let nb = 3;
+			} else {
+				let nb = 2;
 			}
-			else{
-				this.frames[this.positions[i]][0] = new Image();
-				this.frames[this.positions[i]][0].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + 0 + ".png";
-				this.frames[this.positions[i]][1] = new Image();
-				this.frames[this.positions[i]][1].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + 1 + ".png";
+			for (let j=0;j<nb;j++) {
+				this.frames[this.positions[i]][j] = new Image();
+				this.frames[this.positions[i]][j].src = "images/" + name + "_" + this.positions[i].toLowerCase() + "_" + j + ".png";
 			}
 		}
 	}
 }
 
-//For other entities, that don't move, like bombs or walls
+//Entités fixes ou avec animation linéaire (murs, bombes ...)
 class AnimatedSprite extends Sprite {
 	constructor(name,length) {
 		super();
-		this.frames = [];
 		if (length == 1) {
 			this.frames[0] = new Image();
 			this.frames[0].src = "images/" + name + ".png";
@@ -71,7 +69,7 @@ class AnimatedSprite extends Sprite {
 	}
 }
 
-
+// On crée un objet qui contient toutes les images du jeu
 let load_images = function() {
 	return  { 	player : new MovingSprite("player"),
 				foe : new MovingSprite("foe"),
@@ -87,21 +85,26 @@ let load_images = function() {
 
 const image_set = load_images();
 
-//drawing every object inside the canvas
+//Affichage du niveau
 let draw_canva = function(map,started) {
+	// On efface
 	context.clearRect(0, 0, canva.width, canva.height);
+	// On calcule la taille d'une case de jeu
 	let gapX = canva.width / map[0].length;
 	let gapY = canva.height / map.length;
+	// On affiche le fond
 	for (i=0;i<(map.length)+2;i++) {
 		for (j=0;j<map[0].length+2;j++) {
 			context.drawImage(image_set.ground.frames[0], i*gapX, j*gapY, gapX+1, gapY+1);
 		}
 	}
+	// Pour chaque entité de la map, on regarde son type puis on affiche l'image adaptée
 	for (k=0;k<3;k++) {
 		for (i=0;i<map.length;i++) {
 			for (j=0;j<map[i].length;j++) {
 				if (map[i][j].length > k) {
 					switch (map[i][j][k].constructor) {
+						// Joueur
 						case Player :
 							if (map[i][j][k].isMoving) {
 									context.drawImage(image_set.player.frames[map[i][j][k].direction][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
@@ -109,6 +112,7 @@ let draw_canva = function(map,started) {
 									context.drawImage(image_set.player.frames[map[i][j][k].direction][0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							}
 							break;
+						// Ennemi
 						case Foe :
 							if (map[i][j][k].isMoving) {
 									context.drawImage(image_set.foe.frames[map[i][j][k].direction][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
@@ -116,9 +120,11 @@ let draw_canva = function(map,started) {
 									context.drawImage(image_set.foe.frames[map[i][j][k].direction][0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							}
 							break;
+						// Mur destructible
 						case DestructibleWall :
 							context.drawImage(image_set.wall_destructible.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							break;
+						// Mur
 						case Wall :
 							if (j==0 || j== map[i].length-1) {
 								context.drawImage(image_set.wall_vertical.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
@@ -126,9 +132,11 @@ let draw_canva = function(map,started) {
 								context.drawImage(image_set.wall_horizontal.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							} 
 							break;
+						// Bombe
 						case Bomb :
 							context.drawImage(image_set.bomb.frames[map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							break;
+						// Explosion
 						case Explosion :
 							if (map[i][j][k].position == "CENTER") {
 								context.drawImage(image_set.explosion.frames["CENTER"][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
@@ -136,15 +144,11 @@ let draw_canva = function(map,started) {
 								context.drawImage(image_set.explosion.frames[map[i][j][k].position][map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							}
 							break;
+						// PowerUp
 						case PowerUp :
-							if(map[i][j][k].type == "powerBombs"){
-								context.drawImage(image_set.powerUp.frames[1], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
-							} else if(map[i][j][k].type == "moreBombs"){
-								context.drawImage(image_set.powerUp.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
-							} else{
-								console.log("Unhandled power up display. TYPE = " + map[i][j][k].type);
-							}
+							context.drawImage(image_set.powerUp.frames[map[i][j][k].frame], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
 							break;
+						// Sortie
 						case Exit :
 							if (j==0 && map[i][j+1].length > 0 && map[i][j+1][0] instanceof DestructibleWall) {
 									context.drawImage(image_set.wall_vertical.frames[0], (map[i][j][k].x-0.5)*gapX, (map[i][j][k].y-0.5)*gapY, gapX, gapY);
@@ -164,6 +168,7 @@ let draw_canva = function(map,started) {
 			}
 		}
 	}
+	// Si le niveau n'a pas encore commencé, on affiche un message pour indique comment le lancer
 	if (!started) {
 		context.fillStyle = "red";
 		context.font = "70px Arial";
@@ -171,18 +176,21 @@ let draw_canva = function(map,started) {
 	}
 }
 
+// Texte de défaite
 let display_loss = function() {
 	context.fillStyle = "red";
 	context.font = "70px Arial";
 	context.fillText("Defeat :(",400,300);
 }
 
+// Texte de victoire
 let display_win = function() {
 	context.fillStyle = "green";
 	context.font = "70px Arial";
 	context.fillText("Victory !",400,300);
 }
 
+// Menu principal
 let main_screen = function() {
 	context.fillStyle = "white";
 	context.fillRect(0,0,800,600);

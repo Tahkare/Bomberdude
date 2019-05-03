@@ -1,12 +1,11 @@
 /*
- *  Entity is an "abstract class"
- *  it represent every object inside a level of the bomberdude :
+ *  Entity est une classe abstraite
+ *  elle représente tous les éléments dans un niveau de bomberdude
  *  walls / destructible walls / foes / players / bombs / explosions / exits
- *  Contains the common information to every entity :
- *  attributes :
- *      x : the column index in the level map
- *      y : the row index in the level map
- * 		level : the level
+ *  Elle contient 5 attributs :
+ *	x,y : position de l'entité
+ *  level : le niveau
+ *  frame_counter,frame : utilisés pour l'animation
  */
 
 class Entity {
@@ -21,16 +20,15 @@ class Entity {
     }
     
     /* METHODS */
-    // Called 60 times per second to update the entity 
+    // Appelé pour mettre à jour l'entité
     update(){};
-    // Called when the entity should be destroyed (hit by an explosion for example)
+    // Appelé quand l'entité doit être détruite
     onDestroy(){};
 }
 
 /*
- * Used for the border walls and indestructible walls in the level
- * Also parent of DestructibleWall
- * Entity without anything in particular
+ * Représente les murs indestructibles du niveau
+ * Aucune particularité
  */
 class Wall extends Entity{
     /* CONSTRUCTORS */
@@ -40,43 +38,43 @@ class Wall extends Entity{
 }
 
 /*
- * Used for destructible walls inside the level
- * can be destroyed
+ * Utilisé pour les murs destructibles
+ * On a donc une fonction onDestroy
  */
 class DestructibleWall extends Wall{
     /* CONSTRUCTORS */
     constructor(x, y, level){
         super(x,y,level);
     }
-    //methods
-    // When it should be destroyed, we remove it from the map and the list of destructible walls, then adding a powerUp if lucky
+    /* METHODS */
+    // Quand on le détruit, on le retire de la map et on a 40% de chance de mettre un powerUp à la place
     onDestroy() {
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
 		if(Math.random() > 0.6){
 			let pUp = new PowerUp(this.x, this.y, this.level)
 			this.level.map[parseInt(this.y)][parseInt(this.x)].push(pUp);
-			this.level.powerUp_list.push(pUp);
 		}
-		pos = this.level.block_list.indexOf(this);
-		this.level.block_list.splice(pos,1);
+		this.level.nb_blocks -= 1;
+		this.level.current_score += 10;
 	}
 }
 
 /*
- * Used for bombs inside the level
- * can be destroyed
+ * Utilisé pour les bombes
+ * Détruites à leur explosion
  */
 class Bomb extends Entity{
     /* CONSTRUCTORS */
     constructor(x, y, level,player){
 		super(x,y,level);
-		Object.defineProperty(this, "player", {value : player, writable : false});
-		Object.defineProperty(this, "power", {value : player.bombs_power, writable : false});
+		// On définit le propriétaire et la puissance de la bombe à sa création
+		this.player = player;
+		this.power = player.bombs_power;
     }
-    // methods
-    // Animated every 30 loops
-    // explodes after 180 loops (3 seconds)
+    /* METHODS */
+    // Animé toutes les 30 updates
+    // Explose en 180 updates (environ 3 secondes)
     update() {
 		this.frame_counter = (this.frame_counter + 1) % 30;
 		if (this.frame_counter == 0) {
@@ -88,30 +86,27 @@ class Bomb extends Entity{
 	}
 	
 	onDestroy() {
-		// When it explodes, removed from the map and the list
+		// Quand ça explose, on le retire
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
-		pos = this.level.bomb_list.indexOf(this);
-		this.level.bomb_list.splice(pos,1);
 		
-		// The owner's bomb count is reduced by 1
+		// On décrémente le nombre de bombes du propriétaire
 		this.player.bomb_count -= 1;
 		
-		// We create explosions entities on the center and the four directions where the explosion can have an effect
+		// On crée les explosions de la bombe
 		let explosion_center = new Explosion(this.x,this.y,"CENTER",this.level);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(0,0,explosion_center);
-		this.level.explosion_list.push(explosion_center);
-		//for each directions :
+		//On fait ça pour chacune des 4 directions
 		for(let i = 1; i < this.power + 1 ; i++){
 			let spread = true;
-			//if the explosion enounter something else than a Foe or a Player, then stop spreading !(explosion_case[0] instanceof MovingEntity)
+			// Si on rencontre autre chose qu'un personnage ou un powerUp, on arrête la propagation
 			if(this.level.map[parseInt(this.y)][parseInt(this.x)+i].length != 0 && !(this.level.map[parseInt(this.y)][parseInt(this.x)+i][0] instanceof MovingEntity || this.level.map[parseInt(this.y)][parseInt(this.x)+i][0] instanceof PowerUp)){ spread = false;}
 			let last = false;
-			//check if it's the explosion extremity
+			// On regarde si on est à l'extrémité de l'explosion (pour l'affichage)
 			if(i == this.power){ last = true;}
+			// On crée l'explosion et on l'insère
 			let explosion_RIGHT = new Explosion(this.x+i,this.y,"RIGHT",this.level, last);
 			this.level.map[parseInt(this.y)][parseInt(this.x)+i].splice(0,0,explosion_RIGHT);
-			this.level.explosion_list.push(explosion_RIGHT);
 			if(!spread){break;}
 		}
 		for(let i = 1; i < this.power + 1 ; i++){
@@ -121,7 +116,6 @@ class Bomb extends Entity{
 			if(i == this.power){ last = true;}
 			let explosion_LEFT = new Explosion(this.x-i,this.y,"LEFT",this.level, last);
 			this.level.map[parseInt(this.y)][parseInt(this.x)-i].splice(0,0,explosion_LEFT);
-			this.level.explosion_list.push(explosion_LEFT);
 			if(!spread){break;}
 		}
 		for(let i = 1; i < this.power + 1 ; i++){
@@ -131,7 +125,6 @@ class Bomb extends Entity{
 			if(i == this.power){ last = true;}
 			let explosion_DOWN = new Explosion(this.x,this.y+i,"DOWN",this.level, last);
 			this.level.map[parseInt(this.y)+i][parseInt(this.x)].splice(0,0,explosion_DOWN);
-			this.level.explosion_list.push(explosion_DOWN);
 			if(!spread){break;}
 		}
 		for(let i = 1; i < this.power + 1 ; i++){
@@ -141,7 +134,6 @@ class Bomb extends Entity{
 			if(i == this.power){ last = true;}
 			let explosion_UP = new Explosion(this.x,this.y-i,"UP",this.level, last);
 			this.level.map[parseInt(this.y)-i][parseInt(this.x)].splice(0,0,explosion_UP);
-			this.level.explosion_list.push(explosion_UP);
 			if(!spread){break;}
 		}
 	}
@@ -157,8 +149,9 @@ class Explosion extends Entity {
 		}
     }
 	
-	//last for 1/6 seconds
+	// Dure 1/3 de seconde
     update() {
+		// A chaque mise à jour, on appelle la fonction de destruction de toutes les entités sur la case
 		for (let i=0;i<this.level.map[parseInt(this.y)][parseInt(this.x)].length;i++) {
 			let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 			if (i != pos) {
@@ -175,6 +168,7 @@ class Explosion extends Entity {
 				this.frame = 19 - this.frame_counter;
 			}
 		}
+		// On finit par détruire notre entité explosion
 		if (this.frame_counter == 20) {
 			this.onDestroy();
 		}
@@ -183,8 +177,6 @@ class Explosion extends Entity {
 	onDestroy(){
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
-		pos = this.level.explosion_list.indexOf(this);
-		this.level.explosion_list.splice(pos,1);
     }
 }
 
@@ -193,15 +185,17 @@ class PowerUp extends Entity{
     constructor(x, y, level){
 		super(x,y, level);
 		let rng = Math.random();
-		let type;
-		if(rng > 0.6){ type = "powerBombs";}
-		else{ type = "moreBombs";}
-		Object.defineProperty(this, "type", {value : type, writable : false});
+		if(rng > 0.6){ 
+			this.type = "powerBombs";
+			this.frame = 1;
+		} else { 
+			this.type = "moreBombs";
+		}
 	}
 
-	//methods
+	/* METHODS */
 	onPickUp(player){
-		//effect of the power up on the player
+		//Quand le powerUp est ramassé, on applique son effet au joueur
 		switch (this.type){
 			case "powerBombs" :
 				player.bombs_power = player.bombs_power + 1;
@@ -211,14 +205,15 @@ class PowerUp extends Entity{
 				player.max_bombs = player.max_bombs + 1;
 				break;
 		}
-		//removing the power up from the game
+		// On le retire du jeu
+		// Il n'y a pas de fonction onDestroy pour le rendre invulnérable aux explosions
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
-		pos = this.level.powerUp_list.indexOf(this);
-		this.level.powerUp_list.splice(pos,1);
+		this.level.current_score += 20;
 	}
 
 	update(){
+		// Dans la mise à jour, on regarde si un joueur est sur la case pour ramasser le powerUp
 		for(let i = 0; i < this.level.map[parseInt(this.y)][parseInt(this.x)].length; i++){
 			if(this.level.map[parseInt(this.y)][parseInt(this.x)][i] instanceof Player){
 				this.onPickUp(this.level.map[parseInt(this.y)][parseInt(this.x)][i]);
@@ -229,51 +224,63 @@ class PowerUp extends Entity{
 }
 
 /*
- * Used for every entity able to move
- * This class is an abstract class and shouldn't be instanciate.
- *  Got the attribute : 
- *      - direction, which represent the way the entity is looking
- *      - isMoving, a boolean.
+ * Classe mère des joueurs et ennemis
+ * Classe abstraite qui contient la direction de l'entité et si elle se déplace
+ * switched est mis à true si pendant un déplacement, on franchit le milieu d'une case. Utilisé pour le changement de direction des monstres
  */
 class MovingEntity extends Entity{
     /* CONSTRUCTORS */
     constructor(x, y, level){
         super(x,y, level);
-        Object.defineProperty(this, "direction", {value : "DOWN" , writable : true });
-        Object.defineProperty(this, "isMoving", {value : false , writable : true });
+        this.direction = "DOWN";
+		this.isMoving = false;
 		this.switched = false;
     }
     //methods
 
     /*
-     * Shouldn't be used alone.
-     * Work more like a callback function.
-     * Should be called every time update function is called.
+     * Appelé par la fonction update des personnages
      */
     move(){
+		// Si on se déplace
         if(this.isMoving) {
+			// On regarde pour la direction du personnage
             switch (this.direction){
                 case "UP" :
-                    if (this.y % 1 <= 0.5 && this.level.map[parseInt(this.y)-1][parseInt(this.x)].length > 0 && (this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Exit || this.constructor == Foe)  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Player  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor !=  Explosion && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor !=  PowerUp) {
+					// Si on se dirige vers un obstacle, on refuse le mouvement
+					if (this.y <= 0.5) {
 						return false;
 					}
+                    if (this.y % 1 <= 0.5 && this.level.map[parseInt(this.y)-1][parseInt(this.x)].length > 0 && (this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Exit || this.constructor == Foe)  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor != Player  && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor !=  Explosion && this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor !=  PowerUp) {
+						return false;
+					// Si on vient de franchir le milieu, on indique qu'on peut switch de direction
+					} else if (this.y % 1 >= 0.46) {
+						this.switched = true;
+					}
+					// Si on est à plus de 70% ou à moins de 30% de la case, on doit regarder la case en diagonale pour voir si c'est un obstacle
 					if (this.x % 1 >= 0.7 && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1].length > 0 && (this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Exit || this.constructor == Foe)  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor !=  Explosion && this.level.map[parseInt(this.y)-1][parseInt(this.x)+1][0].constructor !=  PowerUp) {
 						return false;
 					}
 					if (this.x % 1 <= 0.3 && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1].length > 0 && (this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Exit || this.constructor == Foe)  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor != Player  && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor !=  Explosion && this.level.map[parseInt(this.y)-1][parseInt(this.x)-1][0].constructor !=  PowerUp) {
 						return false;
 					}
+					// Si on n'a pas refusé le déplacement, on l'effectue
 					this.y -= 0.04;
+					// Si on change de case, on met à jour la map
                     if (this.y % 1 >= 0.96) {
 						let pos = this.level.map[parseInt(this.y)+1][parseInt(this.x)].indexOf(this);
 						this.level.map[parseInt(this.y)+1][parseInt(this.x)].splice(pos,1);			
 						this.level.map[parseInt(this.y)][parseInt(this.x)].push(this);
-						this.switched = true;
 					}
                     break;
                 case "DOWN" :
+					if (this.y >= this.level.map.length + 0.5) {
+						return false;
+					}
                     if (this.y % 1 >= 0.5 && this.level.map[parseInt(this.y)+1][parseInt(this.x)].length > 0 && (this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Exit || this.constructor == Foe)  && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor !=  Explosion && this.level.map[parseInt(this.y)+1][parseInt(this.x)][0].constructor !=  PowerUp) {
 						return false;
+					} else if (this.y % 1 <= 0.54) {
+						this.switched = true;
 					}
 					if (this.x % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && (this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Exit || this.constructor == Foe)  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor !=  Explosion && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor !=  PowerUp) {
 						return false;
@@ -290,8 +297,13 @@ class MovingEntity extends Entity{
 					}
                     break;
                 case "LEFT" :
+					if (this.x <= 0.5) {
+						return false;
+					}
                     if (this.x % 1 <= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)-1].length > 0 && (this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Exit || this.constructor == Foe)  && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor != Player  && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor !=  Explosion && this.level.map[parseInt(this.y)][parseInt(this.x)-1][0].constructor !=  PowerUp) {
 						return false;
+					} else if (this.x % 1 >= 0.46) {
+						this.switched = true;
 					}
 					if (this.y % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1].length > 0 && (this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Exit || this.constructor == Foe)  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor !=  Explosion && this.level.map[parseInt(this.y)+1][parseInt(this.x)-1][0].constructor !=  PowerUp) {
 						return false;
@@ -309,8 +321,13 @@ class MovingEntity extends Entity{
 					}
                     break;
                 case "RIGHT" :
+					if (this.x >= this.level.map[0].length + 0.5) {
+						return false;
+					}
                     if (this.x % 1 >= 0.5 && this.level.map[parseInt(this.y)][parseInt(this.x)+1].length > 0 && (this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Exit || this.constructor == Foe)  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor !=  Explosion && this.level.map[parseInt(this.y)][parseInt(this.x)+1][0].constructor !=  PowerUp) {
 						return false;
+					} else if (this.x % 1 <= 0.54) {
+						this.switched = true;
 					}
 					if (this.y % 1 >= 0.7 && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1].length > 0 && (this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Exit || this.constructor == Foe)  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Foe  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor != Player  && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor !=  Explosion && this.level.map[parseInt(this.y)+1][parseInt(this.x)+1][0].constructor !=  PowerUp) {
 						return false;
@@ -326,9 +343,6 @@ class MovingEntity extends Entity{
 						this.switched = true;
 					}
                     break;
-                case "NONE" :
-                    console.log("MovingEntity.onMove, called with NONE direction && isMoving == true");
-                    return false;
             }
         } else {
 			this.frame = 0;
@@ -339,27 +353,28 @@ class MovingEntity extends Entity{
 }
 
 /*
- * Used only for players Entity
- * added attribute : bomb_count the number of bomb a player have pose on the level
- * 
+ * Représente un joueur
+ * Possède des attributs pour représenter son nombre de bombes actuel et max et la puissance de ses bombes
  */
 class Player extends MovingEntity{
     /* CONSTRUCTORS */
     constructor(x, y, level){
         super(x,y,level);
-		Object.defineProperty(this, "bomb_count", {value : 0, writable : true});
-		Object.defineProperty(this, "max_bombs", {value : 1, writable : true});
-		Object.defineProperty(this, "bombs_power", {value : 1, writable : true});
+		this.bomb_count = 0;
+		this.max_bombs = 1;
+		this.bombs_power = 1;
     }
     
-    //methods
+    /* METHODS */
 	
 	update() {
+		// On anime toutes les 10 updates
 		this.frame_counter = (this.frame_counter + 1) % 10;
 		if (this.frame_counter == 0) {
 			this.frame = (this.frame + 1) % 4;
 		}
 		this.move();
+		// Si on a un montre sur notre case, on meurt
 		for (let i=0; i<this.level.map[parseInt(this.y)][parseInt(this.x)].length;i++) {
 			if (this.level.map[parseInt(this.y)][parseInt(this.x)][i].constructor == Foe) {
 				this.onDestroy();
@@ -367,8 +382,39 @@ class Player extends MovingEntity{
 		}
 	}
 	
-    /* Used when the player is hit
-    */
+	// Fonction de mise à jour du mouvement appelée par le contrôleur
+	update_move(direction) {
+		if (this.level.has_started) {
+			// Soit on dit d'arrêter le déplacement
+			if(direction === "NONE"){
+				this.isMoving = false;
+			} else {
+			// Soit on donne une nouvelle direction
+				this.direction = direction;
+				this.isMoving = true;
+			}
+		}
+	}
+	
+	// Fonction de pose de bombe appelée par le contrôleur
+	drop_bomb(){
+		if (this.level.has_started) {
+			// Si on peut placer une bombe
+			if (this.bomb_count < this.max_bombs) {
+				// On la crée et on incrémente le nombre de bombes
+				let bomb = new Bomb (parseInt(this.x)+0.5, parseInt(this.y)+0.5, this.level, this);
+				this.bomb_count = this.bomb_count + 1;
+				// On met la bombe dans la case et on remet le joueur par dessus
+				let entity_pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
+				this.map[parseInt(this.y)][parseInt(this.x)][entity_pos] = bomb;
+				this.map[parseInt(this.y)][parseInt(this.x)].push(this);
+				this.bomb_list.push(bomb);
+				console.log("Bomb has been planted");
+			}
+		}
+	}
+	
+    // Appelé quand un personnage meurt
     onDestroy(){
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
@@ -385,33 +431,37 @@ class Foe extends MovingEntity{
     constructor(x, y, level){
 		super(x,y, level);
 		this.isMoving = true;
+		// On donne une direction de départ aléatoire aux ennemis
 		let rng = Math.floor(Math.random() * 4);
-			switch (rng){
-				case 0 :
-					this.direction = "UP";
-					break;
-				case 1 :
-					this.direction = "RIGHT";
-					break;
-				case 2 :
-					this.direction = "DOWN";
-					break;
-				case 3 :
-					this.direction = "LEFT";
-					break;
-			}
+		switch (rng){
+			case 0 :
+				this.direction = "UP";
+				break;
+			case 1 :
+				this.direction = "RIGHT";
+				break;
+			case 2 :
+				this.direction = "DOWN";
+				break;
+			case 3 :
+				this.direction = "LEFT";
+				break;
+		}
     }
-    //methods
+    
+	/* METHODS */
     
     update() {
 		this.frame_counter = (this.frame_counter + 1) % 10;
-		//every 1/6 secondes, animate the foe
+		// On anime toutes les 10 updates
 		if (this.frame_counter == 0) {
 			this.frame = (this.frame + 1) % 4;
 		}
+		// On regarde si l'entité arrive à se déplacer
 		this.switched = false;
 		let not_blocked = this.move();
-		if(!not_blocked || (this.switched && Math.random() < 0.1)){
+		if(!not_blocked || (this.switched && Math.random() < 0.10)){
+			// Si elle est bloquée ou qu'on vient d'arriver au milieu d'une case et qu'on tire un nombre inférieur à 0.1, on change de direction
 			let directions = [];
 			if (this.level.map[parseInt(this.y)-1][parseInt(this.x)].length == 0 || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Foe || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Player || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Explosion) {
 				directions[directions.length] = "UP";
@@ -432,14 +482,13 @@ class Foe extends MovingEntity{
 	onDestroy(){
 		let pos = this.level.map[parseInt(this.y)][parseInt(this.x)].indexOf(this);
 		this.level.map[parseInt(this.y)][parseInt(this.x)].splice(pos,1);
-		pos = this.level.foe_list.indexOf(this);
-		this.level.foe_list.splice(pos,1);
+		this.level.nb_foes -= 1;
+		this.level.current_score += 50;
     }
     
 }
 
-
-
+// Entité représentant les sorties
 class Exit extends Entity {
 	/* CONSTRUCTORS */
     constructor(x, y, level){
