@@ -459,7 +459,7 @@ class Foe extends MovingEntity{
 		// On regarde si l'entité arrive à se déplacer
 		this.switched = false;
 		let not_blocked = this.move();
-		if(!not_blocked || (this.switched && Math.random() < 0.05)){
+		if(!not_blocked || (this.switched && Math.random() < 0.01)){
 			// Si elle est bloquée ou qu'on vient d'arriver au milieu d'une case et qu'on tire un nombre inférieur à 0.05, on change de direction
 			let directions = [];
 			if (this.level.map[parseInt(this.y)-1][parseInt(this.x)].length == 0 || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Foe || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Player || this.level.map[parseInt(this.y)-1][parseInt(this.x)][0].constructor == Explosion) {
