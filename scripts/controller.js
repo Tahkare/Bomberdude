@@ -48,7 +48,7 @@ let click_event = function(event) {
 
 // Fonction d'update appelé 60 fois par secondes (mise à jour du moteur + affichage)
 let view = function() {
-//	console.log("Displaying the level");
+	console.log("Displaying the level");
 	draw_canva(level.map,level.has_started);
 	if (level.is_finished && level.has_won) {
 		display_win();
