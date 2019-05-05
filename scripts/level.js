@@ -37,6 +37,7 @@ class Level {
 	// On définit les joueurs et sorties ainsi que le nombre d'ennemis et de blocs destructibles
 	set_values(player_list, exit_list, nb_foes, nb_blocks) {
 		this.player_list = player_list;
+		this.exit_list = exit_list;
 		this.nb_blocks = nb_blocks;
 		this.nb_foes = nb_foes;
 		if (this.kill_all) {
